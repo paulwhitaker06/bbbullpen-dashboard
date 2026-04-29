@@ -77,9 +77,17 @@ tbody tr:nth-child(even) { background: #fafbfc; }
 tbody tr:hover { background: #eef6ff; }
 .rank { font-weight: 700; color: #111827; }
 .team-name { font-weight: 600; color: #111827; }
-.composite-bar { display: inline-block; width: 70px; height: 6px; background: #e5e7eb; border-radius: 3px; margin-right: 8px; vertical-align: middle; overflow: hidden; }
-.composite-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
-.composite-cell { white-space: nowrap; }
+.composite-bar { display: inline-block; width: 90px; height: 8px; background: #e5e7eb; border-radius: 4px; margin-right: 10px; vertical-align: middle; overflow: hidden; }
+.composite-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 4px; }
+.composite-cell { white-space: nowrap; font-weight: 600; color: #064e3b; }
+.composite-num { font-variant-numeric: tabular-nums; }
+
+/* Rankings collapsible drawer */
+.rankings-drawer { margin-top: 22px; margin-bottom: 18px; }
+.rankings-summary { background: linear-gradient(180deg, #f0fdf4 0%, #fff 100%); border: 1px solid #86efac; border-left: 4px solid #10b981; border-radius: 6px; padding: 10px 14px; cursor: pointer; user-select: none; }
+.rankings-summary::-webkit-details-marker { color: #047857; }
+.rankings-drawer[open] .rankings-summary { border-radius: 6px 6px 0 0; border-bottom: 0; }
+.rankings-body { border: 1px solid #86efac; border-top: 0; border-radius: 0 0 6px 6px; padding: 10px 12px; background: #fff; overflow-x: auto; }
 .relievers { font-size: 12px; color: #374151; line-height: 1.55; text-align: left; min-width: 290px; }
 .reliever-line { white-space: nowrap; }
 .reliever-name { color: #111827; font-weight: 500; }
@@ -197,106 +205,20 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 </section>
 
 
-<section class="watchlist-panel">
-  <div class="watchlist-header">
-    <h2>Bullpen Watchlist</h2>
-    <span class="watchlist-meta">17 teams · today's removals + active PL discounts</span>
-  </div>
-  
-<div class="watchlist-row">
-  <div class="watchlist-team">Padres</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Ron Marinaccio (tired (30p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Wandy Peralta (tired (26p yesterday, 42p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Brewers</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Jake Woodford (tired (35p yesterday, 35p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Dodgers</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Díaz (IL/editorial: ESPN)</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Rays</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Uceta (IL/editorial: ESPN)</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Braves</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Raisel Iglesias (IL/editorial: ESPN)</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Giants</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Blade Tidwell (tired (47p yesterday, 47p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Tigers</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Brant Hurter (tired (30p yesterday, 43p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Yankees</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>David Bednar (tired (40p in 3d, back-to-back))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Diamondbacks</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Andrew Hoffmann (tired (38p yesterday, 38p in 3d))</div><div><span class="watchlist-tag injured">IL</span>Yilber Díaz (IL/editorial: ESPN)</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">White Sox</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sean Newcomb (tired (29p yesterday, 39p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Pirates</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Hunter Barco (tired (84p yesterday, 84p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Cardinals</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Luis Peralta (tired (26p yesterday, 42p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Astros</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Josh Hader (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Ryan Weiss (tired (54p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Colton Gordon (tired (50p yesterday, 50p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Royals</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Carlos Estévez (IL/editorial: ESPN)</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Marlins</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Pete Fairbanks (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Michael Petersen (tired (35p in 3d, back-to-back))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Rockies</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sammy Peralta (tired (26p yesterday, 42p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Tanner Gordon (tired (50p yesterday, 50p in 3d))</div></div>
-</div>
-
-<div class="watchlist-row">
-  <div class="watchlist-team">Rangers</div>
-  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Alexis Díaz (IL/editorial: ESPN)</div></div>
-</div>
-</section>
-
-
-<h2 style="font-size:16px; margin-top:20px; margin-bottom:8px;">Team Rankings</h2>
+<details open class="rankings-drawer">
+<summary class="rankings-summary">
+  <h2 style="display:inline; margin:0; font-size:16px;">Team Rankings</h2>
+  <span style="color:#6b7280; font-size:11px; font-weight:400; margin-left:10px;">
+    30 teams · sorted by composite · click to collapse
+  </span>
+</summary>
+<div class="rankings-body">
 <table>
 <thead>
 <tr>
   <th>#</th>
   <th class="left">Team</th>
-  <th>Composite</th>
+  <th class="left">Composite</th>
   <th>LI-FIP</th>
   <th>WAR</th>
   <th>P+</th>
@@ -309,7 +231,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">1</td>
   <td class="left team-name">Padres</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:100%"></span></span>100.0</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:100%"></span></span><span class="composite-num">100.0</span></td>
   <td>3.11</td>
   <td>4.6</td>
   <td>107</td>
@@ -320,7 +242,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">2</td>
   <td class="left team-name">Mariners</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:76%"></span></span>76.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:76%"></span></span><span class="composite-num">76.8</span></td>
   <td>3.31</td>
   <td>2.9</td>
   <td>105</td>
@@ -331,7 +253,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">3</td>
   <td class="left team-name">Phillies</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:71%"></span></span>71.4</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:71%"></span></span><span class="composite-num">71.4</span></td>
   <td>3.53</td>
   <td>3.1</td>
   <td>104</td>
@@ -342,7 +264,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">4</td>
   <td class="left team-name">Red Sox</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:67%"></span></span>67.7</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:67%"></span></span><span class="composite-num">67.7</span></td>
   <td>3.56</td>
   <td>2.9</td>
   <td>103</td>
@@ -353,7 +275,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">5</td>
   <td class="left team-name">Brewers</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:66%"></span></span>66.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:66%"></span></span><span class="composite-num">66.8</span></td>
   <td>3.58</td>
   <td>3.0</td>
   <td>103</td>
@@ -364,7 +286,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">6</td>
   <td class="left team-name">Blue Jays</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:65%"></span></span>65.5</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:65%"></span></span><span class="composite-num">65.5</span></td>
   <td>3.69</td>
   <td>2.6</td>
   <td>105</td>
@@ -375,7 +297,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">7</td>
   <td class="left team-name">Dodgers</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:64%"></span></span>64.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:64%"></span></span><span class="composite-num">64.8</span></td>
   <td>3.81</td>
   <td>2.7</td>
   <td>106</td>
@@ -386,7 +308,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">8</td>
   <td class="left team-name">Rays</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:61%"></span></span>61.4</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:61%"></span></span><span class="composite-num">61.4</span></td>
   <td>3.56</td>
   <td>3.1</td>
   <td>99</td>
@@ -397,7 +319,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">9</td>
   <td class="left team-name">Braves</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:56%"></span></span>56.5</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:56%"></span></span><span class="composite-num">56.5</span></td>
   <td>3.66</td>
   <td>2.0</td>
   <td>102</td>
@@ -408,7 +330,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">10</td>
   <td class="left team-name">Mets</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:49%"></span></span>50.1</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:49%"></span></span><span class="composite-num">50.1</span></td>
   <td>3.64</td>
   <td>2.2</td>
   <td>98</td>
@@ -419,7 +341,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">11</td>
   <td class="left team-name">Giants</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:49%"></span></span>50.1</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:49%"></span></span><span class="composite-num">50.1</span></td>
   <td>3.66</td>
   <td>1.5</td>
   <td>101</td>
@@ -430,7 +352,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">12</td>
   <td class="left team-name">Tigers</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:48%"></span></span>48.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:48%"></span></span><span class="composite-num">48.8</span></td>
   <td>3.86</td>
   <td>1.9</td>
   <td>102</td>
@@ -441,7 +363,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">13</td>
   <td class="left team-name">Guardians</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:48%"></span></span>48.7</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:48%"></span></span><span class="composite-num">48.7</span></td>
   <td>3.64</td>
   <td>2.5</td>
   <td>96</td>
@@ -452,7 +374,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">14</td>
   <td class="left team-name">Orioles</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:46%"></span></span>46.4</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:46%"></span></span><span class="composite-num">46.4</span></td>
   <td>3.76</td>
   <td>2.1</td>
   <td>98</td>
@@ -463,7 +385,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">15</td>
   <td class="left team-name">Yankees</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:44%"></span></span>45.1</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:44%"></span></span><span class="composite-num">45.1</span></td>
   <td>3.89</td>
   <td>1.5</td>
   <td>102</td>
@@ -474,7 +396,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">16</td>
   <td class="left team-name">Cubs</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:44%"></span></span>44.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:44%"></span></span><span class="composite-num">44.8</span></td>
   <td>3.95</td>
   <td>1.4</td>
   <td>103</td>
@@ -485,7 +407,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">17</td>
   <td class="left team-name">Athletics</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:40%"></span></span>40.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:40%"></span></span><span class="composite-num">40.8</span></td>
   <td>4.05</td>
   <td>1.9</td>
   <td>100</td>
@@ -496,7 +418,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">18</td>
   <td class="left team-name">Diamondbacks</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:40%"></span></span>40.5</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:40%"></span></span><span class="composite-num">40.5</span></td>
   <td>3.99</td>
   <td>1.1</td>
   <td>102</td>
@@ -507,7 +429,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">19</td>
   <td class="left team-name">White Sox</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:39%"></span></span>39.6</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:39%"></span></span><span class="composite-num">39.6</span></td>
   <td>3.94</td>
   <td>2.3</td>
   <td>96</td>
@@ -518,7 +440,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">20</td>
   <td class="left team-name">Pirates</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:38%"></span></span>39.0</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:38%"></span></span><span class="composite-num">39.0</span></td>
   <td>3.89</td>
   <td>1.9</td>
   <td>97</td>
@@ -529,7 +451,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">21</td>
   <td class="left team-name">Cardinals</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:35%"></span></span>35.4</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:35%"></span></span><span class="composite-num">35.4</span></td>
   <td>3.99</td>
   <td>1.0</td>
   <td>100</td>
@@ -540,7 +462,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">22</td>
   <td class="left team-name">Astros</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:27%"></span></span>27.8</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:27%"></span></span><span class="composite-num">27.8</span></td>
   <td>4.00</td>
   <td>1.4</td>
   <td>95</td>
@@ -551,7 +473,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">23</td>
   <td class="left team-name">Royals</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:27%"></span></span>27.6</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:27%"></span></span><span class="composite-num">27.6</span></td>
   <td>3.95</td>
   <td>1.6</td>
   <td>93</td>
@@ -562,7 +484,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">24</td>
   <td class="left team-name">Twins</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:26%"></span></span>26.6</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:26%"></span></span><span class="composite-num">26.6</span></td>
   <td>3.98</td>
   <td>1.6</td>
   <td>93</td>
@@ -573,7 +495,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">25</td>
   <td class="left team-name">Reds</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:24%"></span></span>25.2</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:24%"></span></span><span class="composite-num">25.2</span></td>
   <td>4.25</td>
   <td>1.5</td>
   <td>96</td>
@@ -584,7 +506,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">26</td>
   <td class="left team-name">Marlins</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:22%"></span></span>23.1</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:22%"></span></span><span class="composite-num">23.1</span></td>
   <td>4.04</td>
   <td>0.6</td>
   <td>96</td>
@@ -595,7 +517,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">27</td>
   <td class="left team-name">Rockies</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:20%"></span></span>20.9</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:20%"></span></span><span class="composite-num">20.9</span></td>
   <td>4.42</td>
   <td>0.9</td>
   <td>99</td>
@@ -606,7 +528,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">28</td>
   <td class="left team-name">Rangers</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:14%"></span></span>15.5</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:14%"></span></span><span class="composite-num">15.5</span></td>
   <td>4.37</td>
   <td>0.3</td>
   <td>98</td>
@@ -617,7 +539,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">29</td>
   <td class="left team-name">Angels</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:9%"></span></span>10.1</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:9%"></span></span><span class="composite-num">10.1</span></td>
   <td>4.29</td>
   <td>0.6</td>
   <td>93</td>
@@ -628,7 +550,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">30</td>
   <td class="left team-name">Nationals</td>
-  <td class="composite-cell"><span class="composite-bar"><span style="width:0%"></span></span>1.3</td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:0%"></span></span><span class="composite-num">1.3</span></td>
   <td>4.37</td>
   <td>0.3</td>
   <td>91</td>
@@ -638,6 +560,8 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 </tbody>
 </table>
+</div>
+</details>
 
 
 <section class="bet-tracker-panel">
@@ -756,6 +680,99 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 </section>
 
 
+<section class="watchlist-panel">
+  <div class="watchlist-header">
+    <h2>Bullpen Watchlist</h2>
+    <span class="watchlist-meta">17 teams · today's removals + active PL discounts</span>
+  </div>
+  
+<div class="watchlist-row">
+  <div class="watchlist-team">Padres</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Ron Marinaccio (tired (30p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Wandy Peralta (tired (26p yesterday, 42p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Brewers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Jake Woodford (tired (35p yesterday, 35p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Dodgers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Díaz (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rays</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Uceta (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Braves</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Raisel Iglesias (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Giants</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Blade Tidwell (tired (47p yesterday, 47p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Tigers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Brant Hurter (tired (30p yesterday, 43p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Yankees</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>David Bednar (tired (40p in 3d, back-to-back))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Diamondbacks</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Andrew Hoffmann (tired (38p yesterday, 38p in 3d))</div><div><span class="watchlist-tag injured">IL</span>Yilber Díaz (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">White Sox</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sean Newcomb (tired (29p yesterday, 39p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Pirates</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Hunter Barco (tired (84p yesterday, 84p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Cardinals</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Luis Peralta (tired (26p yesterday, 42p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Astros</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Josh Hader (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Ryan Weiss (tired (54p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Colton Gordon (tired (50p yesterday, 50p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Royals</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Carlos Estévez (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Marlins</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Pete Fairbanks (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Michael Petersen (tired (35p in 3d, back-to-back))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rockies</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sammy Peralta (tired (26p yesterday, 42p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Tanner Gordon (tired (50p yesterday, 50p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rangers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Alexis Díaz (IL/editorial: ESPN)</div></div>
+</div>
+</section>
+
+
 <details>
 <summary>Methodology &amp; sources</summary>
 <div class="methodology">
@@ -790,13 +807,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-04-29T16:37:26.805142+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-04-29T16:42:36.164897+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-04-29T16:37:26.805155+00:00 · auto-pushed from
+  Generated 2026-04-29T16:42:36.164912+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
