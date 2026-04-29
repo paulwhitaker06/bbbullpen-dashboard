@@ -5,1359 +5,800 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BBBullpen Dashboard — 2026-04-29</title>
 <style>
-  :root {
-    --bg:#f7f7f5; --card:#fff; --border:#e3e6ea; --text:#1f2328;
-    --text-soft:#3b4047; --muted:#6e7781; --link:#0969da;
-    --green:#16a34a; --green-bg:#f0fdf4; --green-fg:#0d6e40;
-    --red:#dc2626;   --red-bg:#fef2f2;   --red-fg:#991b1b;
-    --amber:#f59e0b; --amber-bg:#fff7ed; --amber-fg:#92400e;
-    --blue:#2563eb;  --blue-bg:#eff6ff;  --blue-fg:#1d4ed8;
-    --purple:#7c3aed; --purple-bg:#f5f3ff; --purple-fg:#5b21b6;
-    --gray-bg:#f3f4f6; --gray-fg:#4b5563;
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--text); line-height:1.55; font-size:14px; }
-  .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 80px; }
-  h1 { font-size:24px; font-weight:600; margin:0 0 4px; }
-  h2 { font-size:17px; font-weight:600; margin:0; }
-  h3 { font-size:14px; font-weight:600; margin:12px 0 6px; }
-  .meta { color:var(--muted); font-size:12px; }
-  section { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:14px 0; }
-  .panel-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
-  .panel-head .meta { font-size:11px; }
-  details > summary { cursor:pointer; font-weight:600; padding:6px 0; user-select:none; list-style:none; }
-  details > summary::-webkit-details-marker { display:none; }
-  details > summary::before { content:"▶"; display:inline-block; width:14px; color:var(--muted); transition:transform .15s; font-size:10px; }
-  details[open] > summary::before { transform:rotate(90deg); }
-  table.rank-table { width:100%; border-collapse:collapse; font-size:13px; }
-  table.rank-table th, table.rank-table td { padding:6px 10px; text-align:left; border-bottom:1px solid var(--border); }
-  table.rank-table th { background:var(--gray-bg); font-weight:600; font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
-  table.rank-table tbody tr:hover { background:#fafbfc; }
-  table.rank-table td.rank { font-weight:600; color:var(--muted); width:36px; }
-  table.rank-table td.team { font-weight:600; }
-  table.rank-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
-  /* Pitcher chips */
-  .pitchers { display:flex; flex-direction:column; gap:4px; padding:8px 12px 12px; background:#fafbfc; border-radius:6px; margin-top:6px; }
-  .pitcher-row { display:flex; align-items:center; gap:8px; font-size:12.5px; padding:4px 0; }
-  .pitcher-slot { display:inline-block; width:34px; font-weight:600; color:var(--muted); font-size:11px; }
-  .pitcher-name { flex:1; }
-  .pitcher-stat { color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums; }
-  .badge { display:inline-block; font-size:10px; font-weight:600; padding:2px 7px; border-radius:10px; letter-spacing:.04em; text-transform:uppercase; }
-  .badge.new { background:var(--green-bg); color:var(--green-fg); border:1px solid #86efac; }
-  .badge.discounted { background:var(--amber-bg); color:var(--amber-fg); border:1px solid #fcd34d; }
-  .badge.lhp { background:var(--blue-bg); color:var(--blue-fg); border:1px solid #93c5fd; }
-  .badge.tired { background:var(--red-bg); color:var(--red-fg); border:1px solid #fca5a5; }
-  /* Key game cards */
-  .key-game-card { display:flex; gap:14px; padding:12px 16px; border-radius:8px; border:1px solid var(--border); margin:10px 0; align-items:flex-start; }
-  .key-game-card.key { border-color:#16a34a; background:#f0fdf4; }
-  .key-game-rank { font-weight:700; color:var(--muted); font-size:14px; min-width:30px; }
-  .key-game-body { flex:1; display:flex; flex-direction:column; gap:4px; }
-  .key-game-line1 { font-weight:600; }
-  .key-game-line1 .key-tag { background:var(--green); color:white; padding:2px 7px; border-radius:4px; font-size:10px; margin-right:8px; letter-spacing:.05em; }
-  .key-game-line2 { font-size:12.5px; color:var(--text-soft); }
-  .key-game-line3 { font-size:12px; color:var(--muted); font-style:italic; margin-top:2px; }
-  .key-game-swing { font-weight:700; font-size:22px; color:var(--green); font-variant-numeric:tabular-nums; line-height:1; }
-  .key-game-swing-label { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
-  /* Watchlist */
-  .watch-row { padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
-  .watch-row:last-child { border-bottom:none; }
-  .watch-team { font-weight:600; min-width:110px; display:inline-block; }
-  .watch-issues { color:var(--muted); }
-  /* Bet tracker */
-  .bet-row { padding:10px 0; border-bottom:1px solid var(--border); display:grid; grid-template-columns:60px 1fr 100px 90px; gap:10px; align-items:center; font-size:13px; }
-  .bet-row.win { background:linear-gradient(to right, var(--green-bg), transparent); }
-  .bet-row.loss { background:linear-gradient(to right, var(--red-bg), transparent); }
-  .bet-row .stake { font-variant-numeric:tabular-nums; text-align:right; }
-  .empty-note { color:var(--muted); font-size:13px; padding:10px 0; font-style:italic; }
-  .below-thresh-card { border:1px dashed var(--muted); background:#fafbfc; }
-  /* Live alerts */
-  .live-alerts { background:var(--gray-bg); }
-  .live-alerts.active { background:var(--red-bg); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.85; } }
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 20px 24px 60px; background: #fff; color: #111827; line-height: 1.45; max-width: 1200px; }
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 700; }
+h2 { font-size: 15px; margin: 0 0 4px; font-weight: 700; color: #111827; }
+.subtitle { color: #4b5563; font-size: 13px; margin-bottom: 6px; }
+.snapshot { color: #6b7280; font-size: 12px; margin-bottom: 18px; }
+
+/* Key Games panel */
+.key-games-panel { border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px 18px; margin-bottom: 22px; background: linear-gradient(180deg, #fffbeb 0%, #fff 100%); border-left: 4px solid #f59e0b; }
+.key-games-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.key-games-header h2 { font-size: 16px; }
+.key-games-meta { color: #6b7280; font-size: 11px; }
+.key-games-formula { color: #92400e; font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; background: #fef3c7; padding: 2px 6px; border-radius: 3px; }
+.key-games-list { display: flex; flex-direction: column; gap: 8px; }
+.key-game-card { background: #fff; border: 1px solid #fde68a; border-radius: 6px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; font-size: 13px; }
+.key-game-rank { font-weight: 700; color: #92400e; min-width: 28px; }
+.key-tag { display: inline-block; font-size: 9px; font-weight: 700; color: #92400e; background: #fde68a; border-radius: 3px; padding: 2px 5px; letter-spacing: 0.4px; margin-right: 6px; vertical-align: middle; }
+.key-game-line1 { font-weight: 600; color: #111827; }
+.key-game-line2 { color: #374151; font-size: 12px; margin-top: 3px; }
+.key-game-line3 { color: #6b7280; font-size: 12px; margin-top: 3px; }
+.key-game-swing { font-size: 18px; font-weight: 700; color: #92400e; line-height: 1; }
+.key-game-swing-label { font-size: 9px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+.below-threshold-card { background: #f9fafb; border: 1px solid #d1d5db; border-radius: 6px; padding: 10px 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: start; font-size: 13px; }
+.below-threshold-card .key-game-rank { color: #6b7280; }
+.below-threshold-tag { display: inline-block; font-size: 9px; font-weight: 700; color: #6b7280; background: #e5e7eb; border-radius: 3px; padding: 2px 5px; letter-spacing: 0.4px; margin-right: 6px; vertical-align: middle; }
+.below-threshold-card .key-game-swing { color: #6b7280; }
+.below-threshold-banner { font-size: 12px; color: #6b7280; margin-bottom: 8px; padding: 6px 10px; background: #f3f4f6; border-radius: 4px; border-left: 3px solid #9ca3af; }
+
+/* Live Alerts panel */
+.live-alerts-panel { border: 2px solid #d1d5db; border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; background: #ffffff; }
+.live-alerts-panel.has-alerts { border-color: #dc2626; background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%); animation: pulse-red 2s ease-in-out infinite; }
+@keyframes pulse-red { 0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.0); } 50% { box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15); } }
+.live-alerts-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.live-alerts-header h2 { font-size: 15px; }
+.live-alerts-panel.has-alerts .live-alerts-header h2 { color: #b91c1c; }
+.live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; vertical-align: middle; margin-right: 6px; }
+.live-alerts-panel.has-alerts .live-dot { background: #dc2626; animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.live-alerts-meta { color: #6b7280; font-size: 11px; }
+.live-alerts-formula { color: #6b7280; font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 3px; }
+.live-alerts-empty { font-size: 12px; color: #6b7280; padding: 6px 0; }
+
+/* Watchlist panel */
+.watchlist-panel { border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; background: #fffbeb; }
+.watchlist-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.watchlist-header h2 { font-size: 14px; color: #92400e; }
+.watchlist-meta { color: #78350f; font-size: 11px; }
+.watchlist-summary { font-size: 12px; color: #78350f; margin-bottom: 8px; }
+.watchlist-row { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding: 6px 0; border-top: 1px solid #fde68a; font-size: 12px; align-items: start; }
+.watchlist-row:first-of-type { border-top: 0; }
+.watchlist-team { font-weight: 600; color: #111827; }
+.watchlist-issues { color: #374151; }
+.watchlist-issues > div { margin-bottom: 2px; }
+.watchlist-tag { display: inline-block; font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 5px; margin-right: 5px; vertical-align: middle; letter-spacing: 0.3px; }
+.watchlist-tag.injured { color: #fff; background: #dc2626; }
+.watchlist-tag.committee { color: #fff; background: #7c3aed; }
+.watchlist-tag.coc { color: #fff; background: #ea580c; }
+.watchlist-tag.mismatch { color: #fff; background: #6b7280; }
+.watchlist-tag.discount { color: #fff; background: #d97706; }
+.watchlist-tag.tired { color: #fff; background: #b91c1c; }
+
+/* Rankings table */
+table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+thead th { background: #f3f4f6; font-weight: 600; color: #1f2937; text-align: right; padding: 9px 10px; border-bottom: 2px solid #d1d5db; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
+thead th.left { text-align: left; }
+tbody td { padding: 9px 10px; text-align: right; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+tbody td.left { text-align: left; }
+tbody tr:nth-child(even) { background: #fafbfc; }
+tbody tr:hover { background: #eef6ff; }
+.rank { font-weight: 700; color: #111827; }
+.team-name { font-weight: 600; color: #111827; }
+.composite-bar { display: inline-block; width: 70px; height: 6px; background: #e5e7eb; border-radius: 3px; margin-right: 8px; vertical-align: middle; overflow: hidden; }
+.composite-bar > span { display: block; height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
+.composite-cell { white-space: nowrap; }
+.relievers { font-size: 12px; color: #374151; line-height: 1.55; text-align: left; min-width: 290px; }
+.reliever-line { white-space: nowrap; }
+.reliever-name { color: #111827; font-weight: 500; }
+.reliever-stats { color: #6b7280; }
+.role-tag { display: inline-block; font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 4px; margin-right: 5px; vertical-align: middle; letter-spacing: 0.3px; min-width: 22px; text-align: center; }
+.role-CL { color: #065f46; background: #d1fae5; }
+.role-S1 { color: #1e40af; background: #dbeafe; }
+.role-S2 { color: #5b21b6; background: #ede9fe; }
+.role-MR { color: #6b7280; background: #f3f4f6; }
+.pitcher-badge { display: inline-block; font-size: 9px; font-weight: 700; border-radius: 3px; padding: 1px 5px; margin-left: 4px; vertical-align: middle; letter-spacing: 0.3px; }
+.pitcher-badge.new { color: #065f46; background: #d1fae5; border: 1px solid #34d399; }
+.pitcher-badge.discount { color: #92400e; background: #fef3c7; border: 1px solid #fbbf24; }
+.pitcher-badge.lhp { color: #1e40af; background: #dbeafe; border: 1px solid #60a5fa; }
+
+/* Bet Tracker panel */
+.bet-tracker-panel { border: 1px solid #d1d5db; border-left: 4px solid #4f46e5; border-radius: 8px; padding: 14px 18px; margin-top: 24px; background: linear-gradient(180deg, #eef2ff 0%, #fff 100%); }
+.bet-tracker-header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.bet-tracker-header h2 { font-size: 15px; color: #3730a3; }
+.bet-tracker-meta { color: #4338ca; font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; background: #e0e7ff; padding: 2px 6px; border-radius: 3px; }
+.bet-tracker-summary { font-size: 13px; color: #111827; padding: 8px 10px; background: #fff; border: 1px solid #c7d2fe; border-radius: 6px; margin-bottom: 10px; display: flex; gap: 16px; flex-wrap: wrap; }
+.bet-tracker-summary .stat { display: inline-flex; flex-direction: column; gap: 2px; }
+.bet-tracker-summary .stat-label { font-size: 10px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.4px; }
+.bet-tracker-summary .stat-val { font-size: 14px; font-weight: 700; color: #111827; }
+.bet-tracker-summary .stat-val.loss { color: #b91c1c; }
+.bet-tracker-summary .stat-val.win { color: #059669; }
+.bet-tracker-summary .stat-val.pend { color: #b45309; }
+.bet-table { width: 100%; border-collapse: collapse; font-size: 12px; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; }
+.bet-table thead th { background: #f3f4f6; font-weight: 600; color: #374151; text-align: left; padding: 7px 9px; border-bottom: 1px solid #d1d5db; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; white-space: nowrap; }
+.bet-table tbody td { padding: 8px 9px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+.bet-table tbody tr:last-child td { border-bottom: 0; }
+.bet-result-tag { display: inline-block; font-size: 10px; font-weight: 700; color: #fff; border-radius: 3px; padding: 2px 7px; letter-spacing: 0.4px; }
+.bet-result-tag.win { background: #059669; }
+.bet-result-tag.loss { background: #dc2626; }
+.bet-result-tag.pending { background: #d97706; animation: blink 1.5s ease-in-out infinite; }
+.bet-mode-tag { background: #e0e7ff; color: #3730a3; font-weight: 700; font-size: 10px; padding: 2px 5px; border-radius: 3px; }
+.bet-tracker-thesis { font-size: 11px; color: #4338ca; margin-top: 10px; padding: 6px 10px; background: #e0e7ff; border-radius: 4px; border-left: 3px solid #6366f1; line-height: 1.55; }
+
+/* Paroli banner */
+.paroli-banner { background: linear-gradient(90deg, #fef3c7 0%, #fff 100%); border: 1px solid #f59e0b; border-radius: 6px; padding: 10px 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.paroli-label { font-size: 10px; color: #78350f; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; }
+.paroli-stake { font-size: 18px; color: #92400e; font-weight: 700; margin-top: 2px; }
+.paroli-rules { font-size: 11px; color: #78350f; line-height: 1.5; max-width: 340px; }
+
+/* Mode breakdown */
+.mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.mode-card { background: #fff; border: 1px solid #c7d2fe; border-radius: 6px; padding: 8px 10px; }
+.mode-card .mode-label { font-size: 10px; color: #3730a3; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; margin-bottom: 4px; }
+.mode-card .mode-stats { font-size: 12px; color: #374151; }
+.mode-card .mode-rules { font-size: 11px; color: #6b7280; margin-top: 3px; }
+
+/* Phase 7 advisory banner */
+.phase7-banner { background: linear-gradient(90deg, #fef2f2 0%, #fff 100%); border: 1px solid #fca5a5; border-left: 4px solid #b91c1c; border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 12px; color: #7f1d1d; line-height: 1.55; }
+.phase7-banner strong { color: #991b1b; }
+
+/* Methodology drawer */
+details { margin-top: 24px; }
+summary { cursor: pointer; padding: 10px 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; font-weight: 600; font-size: 13px; }
+details[open] summary { border-radius: 6px 6px 0 0; }
+.methodology { border: 1px solid #e5e7eb; border-top: 0; padding: 14px 16px; background: #fdfdfd; border-radius: 0 0 6px 6px; font-size: 13px; color: #374151; }
+.methodology h3 { margin: 12px 0 6px; font-size: 13px; }
+.methodology h3:first-child { margin-top: 0; }
+.methodology p { margin: 6px 0; }
+.methodology a { color: #1d4ed8; }
+.methodology code { font-family: ui-monospace, "SF Mono", Menlo, monospace; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+.source-note { font-size: 11px; color: #6b7280; margin-top: 12px; }
 </style>
 </head>
 <body>
-<div class="wrap">
-<header style="margin-bottom:12px;">
-  <h1>BBBullpen — Bullpen Edge Tracker</h1>
-  <div class="meta">Snapshot: 2026-04-29 · Methodology: v1.6.0-phase5b · auto-refreshed daily at 13:30 UTC</div>
-</header>
+<h1>MLB Bullpen Rankings — 2026 Season</h1>
+<div class="subtitle">All 30 bullpens ranked by a forward-looking, leverage-weighted composite. The pitchers most likely to throw 6th-inning-and-on, weighted by projected role.</div>
+<div class="snapshot">Snapshot: 2026-04-29 · v1.6.0-phase5b · auto-refreshed daily at 13:00 + 13:30 + 13:35 UTC · <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#6366f1;">source</a></div>
 
-<section class="live-alerts">
-  <div class="panel-head">
-    <h2>● Live Bullpen Alerts</h2>
-    <span class="meta">Phase 6.1 — placeholder; live alerter scan stays in paul-bbbullpen alerter workflow</span>
-  </div>
-  <div class="empty-note">No live games are currently scoring with bullpen mismatches above the 40-BE / 6th-inning threshold. Panel populates from the 20-minute live scan during games.</div>
-</section>
 
-<section>
-  <div class="panel-head">
-    <h2>Key Bullpen Games — Next 3 Days</h2>
-    <span class="meta">0 flagged / 15 scored / 24 deferred</span>
-  </div>
-  
-  <div class="key-game-card below-thresh-card">
-    <div class="key-game-rank">—</div>
-    <div class="key-game-body">
-      <div class="key-game-line1">No games above Swing 60 today. Top of slate:</div>
-      <div class="key-game-line2">
-        2026-04-29 · Cubs @ Padres ·
-        Swing 55.6 · BE 58.0 (Padres)
-      </div>
-      <div class="key-game-line3">Kalshi: Kalshi market not reachable</div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <details open>
-    <summary><h2 style="display:inline; margin-left:6px;">Team Rankings</h2> <span class="meta">— click any team to expand top-5 and see today's badges</span></summary>
-    <table class="rank-table" style="margin-top:10px;">
-      <thead>
-        <tr>
-          <th>#</th><th>Team</th>
-          <th class="num">Comp</th>
-          <th class="num">LI-FIP</th>
-          <th class="num">WAR</th>
-          <th class="num">P+</th>
-          <th class="num">LHP%</th>
-        </tr>
-      </thead>
-      <tbody>
-  <tr>
-    <td class="rank">1</td>
-    <td class="team">
-      <details>
-        <summary>Padres <span class="badge tired" style="margin-right:4px;" title="Removed today">−2</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Mason Miller </span>
-      <span class="pitcher-stat">56 IP · 1.97 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Adrian Morejon <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">55 IP · 3.23 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Jason Adam </span>
-      <span class="pitcher-stat">53 IP · 3.83 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Bradgley Rodriguez </span>
-      <span class="pitcher-stat">51 IP · 4.01 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Jeremiah Estrada </span>
-      <span class="pitcher-stat">48 IP · 3.27 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">100.0</td>
-    <td class="num">3.11</td>
-    <td class="num">4.6</td>
-    <td class="num">107</td>
-    <td class="num">23%</td>
-  </tr>
-  <tr>
-    <td class="rank">2</td>
-    <td class="team">
-      <details>
-        <summary>Mariners </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Andrés Muñoz </span>
-      <span class="pitcher-stat">52 IP · 3.07 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Matt Brash </span>
-      <span class="pitcher-stat">51 IP · 3.16 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Jose A. Ferrer <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">54 IP · 3.32 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Eduard Bazardo </span>
-      <span class="pitcher-stat">53 IP · 3.76 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Gabe Speier <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">47 IP · 3.47 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">76.8</td>
-    <td class="num">3.31</td>
-    <td class="num">2.9</td>
-    <td class="num">105</td>
-    <td class="num">34%</td>
-  </tr>
-  <tr>
-    <td class="rank">3</td>
-    <td class="team">
-      <details>
-        <summary>Phillies </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Jhoan Duran </span>
-      <span class="pitcher-stat">48 IP · 2.53 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Brad Keller </span>
-      <span class="pitcher-stat">55 IP · 4.28 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">José Alvarado </span>
-      <span class="pitcher-stat">51 IP · 3.30 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Tim Mayza <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 4.12 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Orion Kerkering </span>
-      <span class="pitcher-stat">48 IP · 3.68 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">71.4</td>
-    <td class="num">3.53</td>
-    <td class="num">3.1</td>
-    <td class="num">104</td>
-    <td class="num">16%</td>
-  </tr>
-  <tr>
-    <td class="rank">4</td>
-    <td class="team">
-      <details>
-        <summary>Red Sox </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Aroldis Chapman <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 2.88 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Garrett Whitlock </span>
-      <span class="pitcher-stat">57 IP · 3.19 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Zack Kelly </span>
-      <span class="pitcher-stat">51 IP · 4.34 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Greg Weissert </span>
-      <span class="pitcher-stat">50 IP · 4.11 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Danny Coulombe <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 3.83 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">67.7</td>
-    <td class="num">3.56</td>
-    <td class="num">2.9</td>
-    <td class="num">103</td>
-    <td class="num">42%</td>
-  </tr>
-  <tr>
-    <td class="rank">5</td>
-    <td class="team">
-      <details>
-        <summary>Brewers <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Abner Uribe </span>
-      <span class="pitcher-stat">60 IP · 3.34 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Trevor Megill </span>
-      <span class="pitcher-stat">53 IP · 3.23 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Aaron Ashby <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">55 IP · 3.69 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Angel Zerpa <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">52 IP · 3.83 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Grant Anderson </span>
-      <span class="pitcher-stat">51 IP · 4.19 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">66.8</td>
-    <td class="num">3.58</td>
-    <td class="num">3.0</td>
-    <td class="num">103</td>
-    <td class="num">34%</td>
-  </tr>
-  <tr>
-    <td class="rank">6</td>
-    <td class="team">
-      <details>
-        <summary>Blue Jays </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Louis Varland </span>
-      <span class="pitcher-stat">55 IP · 3.39 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Tyler Rogers <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">61 IP · 3.93 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Jeff Hoffman </span>
-      <span class="pitcher-stat">52 IP · 3.45 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Braydon Fisher </span>
-      <span class="pitcher-stat">51 IP · 3.94 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Mason Fluharty <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">47 IP · 3.90 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">65.5</td>
-    <td class="num">3.69</td>
-    <td class="num">2.6</td>
-    <td class="num">105</td>
-    <td class="num">39%</td>
-  </tr>
-  <tr>
-    <td class="rank">7</td>
-    <td class="team">
-      <details>
-        <summary>Dodgers <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Tanner Scott <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 3.53 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Alex Vesia <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 3.59 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Blake Treinen </span>
-      <span class="pitcher-stat">49 IP · 4.01 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Will Klein </span>
-      <span class="pitcher-stat">48 IP · 4.12 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Jack Dreyer <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">46 IP · 4.07 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">64.8</td>
-    <td class="num">3.81</td>
-    <td class="num">2.7</td>
-    <td class="num">106</td>
-    <td class="num">66%</td>
-  </tr>
-  <tr>
-    <td class="rank">8</td>
-    <td class="team">
-      <details>
-        <summary>Rays <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Bryan Baker </span>
-      <span class="pitcher-stat">52 IP · 3.66 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Griffin Jax </span>
-      <span class="pitcher-stat">55 IP · 2.90 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Garrett Cleavinger <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">46 IP · 3.48 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Cole Sulser </span>
-      <span class="pitcher-stat">50 IP · 4.22 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Kevin Kelly </span>
-      <span class="pitcher-stat">46 IP · 3.87 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">61.4</td>
-    <td class="num">3.56</td>
-    <td class="num">3.1</td>
-    <td class="num">99</td>
-    <td class="num">17%</td>
-  </tr>
-  <tr>
-    <td class="rank">9</td>
-    <td class="team">
-      <details>
-        <summary>Braves <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Robert Suarez </span>
-      <span class="pitcher-stat">55 IP · 3.37 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Dylan Lee <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">53 IP · 3.48 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Tyler Kinley </span>
-      <span class="pitcher-stat">51 IP · 3.89 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Aaron Bummer <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 3.80 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Joel Payamps <span class="badge new">NEW</span></span>
-      <span class="pitcher-stat">46 IP · 4.09 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">56.5</td>
-    <td class="num">3.66</td>
-    <td class="num">2.0</td>
-    <td class="num">102</td>
-    <td class="num">38%</td>
-  </tr>
-  <tr>
-    <td class="rank">10</td>
-    <td class="team">
-      <details>
-        <summary>Mets </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Devin Williams </span>
-      <span class="pitcher-stat">53 IP · 3.11 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Luke Weaver </span>
-      <span class="pitcher-stat">55 IP · 3.94 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Brooks Raley <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 3.79 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">A.J. Minter <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">44 IP · 3.58 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Huascar Brazobán </span>
-      <span class="pitcher-stat">49 IP · 4.00 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">50.1</td>
-    <td class="num">3.64</td>
-    <td class="num">2.2</td>
-    <td class="num">98</td>
-    <td class="num">33%</td>
-  </tr>
-  <tr>
-    <td class="rank">11</td>
-    <td class="team">
-      <details>
-        <summary>Giants <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Ryan Walker </span>
-      <span class="pitcher-stat">52 IP · 3.31 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Erik Miller </span>
-      <span class="pitcher-stat">51 IP · 3.59 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Keaton Winn </span>
-      <span class="pitcher-stat">50 IP · 3.61 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Caleb Kilian </span>
-      <span class="pitcher-stat">48 IP · 4.18 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Matt Gage <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">47 IP · 3.98 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">50.1</td>
-    <td class="num">3.66</td>
-    <td class="num">1.5</td>
-    <td class="num">101</td>
-    <td class="num">15%</td>
-  </tr>
-  <tr>
-    <td class="rank">12</td>
-    <td class="team">
-      <details>
-        <summary>Tigers <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Kenley Jansen </span>
-      <span class="pitcher-stat">49 IP · 4.21 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Will Vest </span>
-      <span class="pitcher-stat">55 IP · 3.24 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Kyle Finnegan </span>
-      <span class="pitcher-stat">52 IP · 4.04 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Tyler Holton <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">59 IP · 3.97 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Drew Anderson </span>
-      <span class="pitcher-stat">47 IP · 3.88 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">48.8</td>
-    <td class="num">3.86</td>
-    <td class="num">1.9</td>
-    <td class="num">102</td>
-    <td class="num">18%</td>
-  </tr>
-  <tr>
-    <td class="rank">13</td>
-    <td class="team">
-      <details>
-        <summary>Guardians </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Cade Smith </span>
-      <span class="pitcher-stat">57 IP · 2.82 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Hunter Gaddis </span>
-      <span class="pitcher-stat">53 IP · 4.11 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Erik Sabrowski <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">53 IP · 3.92 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Tim Herrin <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 3.86 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Shawn Armstrong </span>
-      <span class="pitcher-stat">47 IP · 3.97 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">48.7</td>
-    <td class="num">3.64</td>
-    <td class="num">2.5</td>
-    <td class="num">96</td>
-    <td class="num">34%</td>
-  </tr>
-  <tr>
-    <td class="rank">14</td>
-    <td class="team">
-      <details>
-        <summary>Orioles </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Ryan Helsley </span>
-      <span class="pitcher-stat">53 IP · 3.30 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Andrew Kittredge </span>
-      <span class="pitcher-stat">53 IP · 3.70 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Rico Garcia <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">52 IP · 4.23 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Keegan Akin <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 4.07 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Anthony Nunez </span>
-      <span class="pitcher-stat">50 IP · 3.78 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">46.4</td>
-    <td class="num">3.76</td>
-    <td class="num">2.1</td>
-    <td class="num">98</td>
-    <td class="num">35%</td>
-  </tr>
-  <tr>
-    <td class="rank">15</td>
-    <td class="team">
-      <details>
-        <summary>Yankees <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Fernando Cruz </span>
-      <span class="pitcher-stat">52 IP · 3.56 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Tim Hill </span>
-      <span class="pitcher-stat">53 IP · 4.26 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Brent Headrick <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 3.89 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Camilo Doval </span>
-      <span class="pitcher-stat">51 IP · 3.64 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Paul Blackburn <span class="badge new">NEW</span></span>
-      <span class="pitcher-stat">43 IP · 4.25 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">45.1</td>
-    <td class="num">3.89</td>
-    <td class="num">1.5</td>
-    <td class="num">102</td>
-    <td class="num">19%</td>
-  </tr>
-  <tr>
-    <td class="rank">16</td>
-    <td class="team">
-      <details>
-        <summary>Cubs </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Daniel Palencia </span>
-      <span class="pitcher-stat">44 IP · 3.70 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Phil Maton </span>
-      <span class="pitcher-stat">54 IP · 4.09 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Ben Brown </span>
-      <span class="pitcher-stat">55 IP · 3.47 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Jacob Webb </span>
-      <span class="pitcher-stat">49 IP · 4.51 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Hoby Milner <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 4.18 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">44.8</td>
-    <td class="num">3.95</td>
-    <td class="num">1.4</td>
-    <td class="num">103</td>
-    <td class="num">16%</td>
-  </tr>
-  <tr>
-    <td class="rank">17</td>
-    <td class="team">
-      <details>
-        <summary>Athletics </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Jack Perkins </span>
-      <span class="pitcher-stat">54 IP · 3.80 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Joel Kuhnel </span>
-      <span class="pitcher-stat">53 IP · 4.00 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Hogan Harris <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">54 IP · 4.46 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Mark Leiter Jr. </span>
-      <span class="pitcher-stat">50 IP · 4.02 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Justin Sterner </span>
-      <span class="pitcher-stat">48 IP · 4.07 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">40.8</td>
-    <td class="num">4.05</td>
-    <td class="num">1.9</td>
-    <td class="num">100</td>
-    <td class="num">20%</td>
-  </tr>
-  <tr>
-    <td class="rank">18</td>
-    <td class="team">
-      <details>
-        <summary>Diamondbacks <span class="badge tired" style="margin-right:4px;" title="Removed today">−2</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Paul Sewald </span>
-      <span class="pitcher-stat">52 IP · 4.31 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Jonathan Loáisiga </span>
-      <span class="pitcher-stat">50 IP · 3.68 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Juan Morillo </span>
-      <span class="pitcher-stat">53 IP · 4.12 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Taylor Clarke </span>
-      <span class="pitcher-stat">51 IP · 4.25 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Kevin Ginkel </span>
-      <span class="pitcher-stat">50 IP · 3.44 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">40.5</td>
-    <td class="num">3.99</td>
-    <td class="num">1.1</td>
-    <td class="num">102</td>
-    <td class="num">0%</td>
-  </tr>
-  <tr>
-    <td class="rank">19</td>
-    <td class="team">
-      <details>
-        <summary>White Sox <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Seranthony Domínguez </span>
-      <span class="pitcher-stat">51 IP · 4.23 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Grant Taylor </span>
-      <span class="pitcher-stat">64 IP · 3.01 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Jordan Leasure </span>
-      <span class="pitcher-stat">52 IP · 4.51 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Jordan Hicks </span>
-      <span class="pitcher-stat">51 IP · 4.20 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Bryan Hudson <span class="badge new">NEW</span> <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">46 IP · 4.11 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">39.6</td>
-    <td class="num">3.94</td>
-    <td class="num">2.3</td>
-    <td class="num">96</td>
-    <td class="num">14%</td>
-  </tr>
-  <tr>
-    <td class="rank">20</td>
-    <td class="team">
-      <details>
-        <summary>Pirates <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Dennis Santana </span>
-      <span class="pitcher-stat">55 IP · 3.93 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Gregory Soto <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">52 IP · 3.46 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Isaac Mattson </span>
-      <span class="pitcher-stat">51 IP · 4.34 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Mason Montgomery <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 3.71 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Yohan Ramírez </span>
-      <span class="pitcher-stat">47 IP · 4.10 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">39.0</td>
-    <td class="num">3.89</td>
-    <td class="num">1.9</td>
-    <td class="num">97</td>
-    <td class="num">38%</td>
-  </tr>
-  <tr>
-    <td class="rank">21</td>
-    <td class="team">
-      <details>
-        <summary>Cardinals <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Riley O&#x27;Brien </span>
-      <span class="pitcher-stat">53 IP · 3.56 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">JoJo Romero <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">53 IP · 3.90 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Ryne Stanek </span>
-      <span class="pitcher-stat">50 IP · 4.09 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">George Soriano </span>
-      <span class="pitcher-stat">49 IP · 4.36 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Justin Bruihl <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">48 IP · 4.46 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">35.4</td>
-    <td class="num">3.99</td>
-    <td class="num">1.0</td>
-    <td class="num">100</td>
-    <td class="num">38%</td>
-  </tr>
-  <tr>
-    <td class="rank">22</td>
-    <td class="team">
-      <details>
-        <summary>Astros <span class="badge tired" style="margin-right:4px;" title="Removed today">−3</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Bryan Abreu </span>
-      <span class="pitcher-stat">54 IP · 3.54 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Enyel De Los Santos </span>
-      <span class="pitcher-stat">51 IP · 4.31 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Bryan King <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">54 IP · 3.84 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Steven Okert <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 4.09 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">AJ Blubaugh <span class="badge new">NEW</span></span>
-      <span class="pitcher-stat">46 IP · 4.60 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">27.8</td>
-    <td class="num">4.00</td>
-    <td class="num">1.4</td>
-    <td class="num">95</td>
-    <td class="num">35%</td>
-  </tr>
-  <tr>
-    <td class="rank">23</td>
-    <td class="team">
-      <details>
-        <summary>Royals <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Lucas Erceg </span>
-      <span class="pitcher-stat">53 IP · 3.77 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Matt Strahm <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">54 IP · 3.70 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Daniel Lynch IV <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 4.24 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">John Schreiber </span>
-      <span class="pitcher-stat">52 IP · 4.29 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Nick Mears <span class="badge new">NEW</span></span>
-      <span class="pitcher-stat">48 IP · 3.94 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">27.6</td>
-    <td class="num">3.95</td>
-    <td class="num">1.6</td>
-    <td class="num">93</td>
-    <td class="num">42%</td>
-  </tr>
-  <tr>
-    <td class="rank">24</td>
-    <td class="team">
-      <details>
-        <summary>Twins </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Cole Sands </span>
-      <span class="pitcher-stat">55 IP · 3.85 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Justin Topa </span>
-      <span class="pitcher-stat">51 IP · 3.91 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Eric Orze </span>
-      <span class="pitcher-stat">51 IP · 4.03 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Taylor Rogers <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 4.20 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Kody Funderburk <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 4.07 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">26.6</td>
-    <td class="num">3.98</td>
-    <td class="num">1.6</td>
-    <td class="num">93</td>
-    <td class="num">30%</td>
-  </tr>
-  <tr>
-    <td class="rank">25</td>
-    <td class="team">
-      <details>
-        <summary>Reds </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Emilio Pagán </span>
-      <span class="pitcher-stat">54 IP · 4.36 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Tony Santillan </span>
-      <span class="pitcher-stat">57 IP · 4.40 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Graham Ashcraft </span>
-      <span class="pitcher-stat">53 IP · 3.71 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Brock Burke <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">51 IP · 4.03 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Connor Phillips </span>
-      <span class="pitcher-stat">50 IP · 4.72 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">25.2</td>
-    <td class="num">4.25</td>
-    <td class="num">1.5</td>
-    <td class="num">96</td>
-    <td class="num">15%</td>
-  </tr>
-  <tr>
-    <td class="rank">26</td>
-    <td class="team">
-      <details>
-        <summary>Marlins <span class="badge tired" style="margin-right:4px;" title="Removed today">−2</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Tyler Phillips </span>
-      <span class="pitcher-stat">55 IP · 4.27 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Calvin Faucher </span>
-      <span class="pitcher-stat">51 IP · 3.99 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Anthony Bender </span>
-      <span class="pitcher-stat">51 IP · 3.91 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Andrew Nardi <span class="badge new">NEW</span> <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">46 IP · 3.87 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">John King <span class="badge new">NEW</span> <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">45 IP · 3.99 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">23.1</td>
-    <td class="num">4.04</td>
-    <td class="num">0.6</td>
-    <td class="num">96</td>
-    <td class="num">29%</td>
-  </tr>
-  <tr>
-    <td class="rank">27</td>
-    <td class="team">
-      <details>
-        <summary>Rockies <span class="badge tired" style="margin-right:4px;" title="Removed today">−2</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Victor Vodnik </span>
-      <span class="pitcher-stat">52 IP · 4.36 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Jimmy Herget </span>
-      <span class="pitcher-stat">63 IP · 4.33 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Antonio Senzatela </span>
-      <span class="pitcher-stat">49 IP · 4.78 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Juan Mejia </span>
-      <span class="pitcher-stat">51 IP · 4.39 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Jaden Hill </span>
-      <span class="pitcher-stat">48 IP · 4.27 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">20.9</td>
-    <td class="num">4.42</td>
-    <td class="num">0.9</td>
-    <td class="num">99</td>
-    <td class="num">0%</td>
-  </tr>
-  <tr>
-    <td class="rank">28</td>
-    <td class="team">
-      <details>
-        <summary>Rangers <span class="badge tired" style="margin-right:4px;" title="Removed today">−1</span></summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Jakob Junis </span>
-      <span class="pitcher-stat">52 IP · 3.96 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Cole Winn </span>
-      <span class="pitcher-stat">51 IP · 4.56 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Jacob Latz <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 4.27 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Tyler Alexander <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">46 IP · 4.34 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Gavin Collyer </span>
-      <span class="pitcher-stat">52 IP · 4.97 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">15.5</td>
-    <td class="num">4.37</td>
-    <td class="num">0.3</td>
-    <td class="num">98</td>
-    <td class="num">33%</td>
-  </tr>
-  <tr>
-    <td class="rank">29</td>
-    <td class="team">
-      <details>
-        <summary>Angels </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Sam Bachman </span>
-      <span class="pitcher-stat">51 IP · 4.38 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Chase Silseth </span>
-      <span class="pitcher-stat">48 IP · 4.26 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Kirby Yates </span>
-      <span class="pitcher-stat">47 IP · 3.98 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Brent Suter <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">52 IP · 4.40 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Drew Pomeranz <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">50 IP · 4.43 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">10.1</td>
-    <td class="num">4.29</td>
-    <td class="num">0.6</td>
-    <td class="num">93</td>
-    <td class="num">33%</td>
-  </tr>
-  <tr>
-    <td class="rank">30</td>
-    <td class="team">
-      <details>
-        <summary>Nationals </summary>
-        <div class="pitchers">
-    <div class="pitcher-row">
-      <span class="pitcher-slot">CL</span>
-      <span class="pitcher-name">Clayton Beeter </span>
-      <span class="pitcher-stat">44 IP · 4.17 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S1</span>
-      <span class="pitcher-name">Cole Henry </span>
-      <span class="pitcher-stat">39 IP · 5.03 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">S2</span>
-      <span class="pitcher-name">Gus Varland </span>
-      <span class="pitcher-stat">52 IP · 4.11 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">Brad Lord </span>
-      <span class="pitcher-stat">55 IP · 4.23 FIP</span>
-    </div>
-    <div class="pitcher-row">
-      <span class="pitcher-slot">MR</span>
-      <span class="pitcher-name">PJ Poulin <span class="badge lhp">LHP</span></span>
-      <span class="pitcher-stat">49 IP · 4.40 FIP</span>
-    </div></div>
-      </details>
-    </td>
-    <td class="num">1.3</td>
-    <td class="num">4.37</td>
-    <td class="num">0.3</td>
-    <td class="num">91</td>
-    <td class="num">17%</td>
-  </tr></tbody>
-    </table>
-  </details>
-</section>
-
-<section>
-  <div class="panel-head">
-    <h2>Bullpen Watchlist</h2>
-    <span class="meta">tonight only · 17 teams</span>
-  </div>
-  <div class="watch-row"><span class="watch-team">Padres</span> <span class="watch-issues">Removed: Ron Marinaccio (tired (30p yesterday, 54p in 3d)) · Removed: Wandy Peralta (tired (26p yesterday, 42p in 3d))</span></div><div class="watch-row"><span class="watch-team">Brewers</span> <span class="watch-issues">Removed: Jake Woodford (tired (35p yesterday, 35p in 3d))</span></div><div class="watch-row"><span class="watch-team">Dodgers</span> <span class="watch-issues">Removed: Edwin Díaz (IL/editorial: ESPN)</span></div><div class="watch-row"><span class="watch-team">Rays</span> <span class="watch-issues">Removed: Edwin Uceta (IL/editorial: ESPN)</span></div><div class="watch-row"><span class="watch-team">Braves</span> <span class="watch-issues">Removed: Raisel Iglesias (IL/editorial: ESPN)</span></div><div class="watch-row"><span class="watch-team">Giants</span> <span class="watch-issues">Removed: Blade Tidwell (tired (47p yesterday, 47p in 3d))</span></div><div class="watch-row"><span class="watch-team">Tigers</span> <span class="watch-issues">Removed: Brant Hurter (tired (30p yesterday, 43p in 3d))</span></div><div class="watch-row"><span class="watch-team">Yankees</span> <span class="watch-issues">Removed: David Bednar (tired (40p in 3d, back-to-back))</span></div><div class="watch-row"><span class="watch-team">Diamondbacks</span> <span class="watch-issues">Removed: Andrew Hoffmann (tired (38p yesterday, 38p in 3d)) · Removed: Yilber Díaz (IL/editorial: ESPN)</span></div><div class="watch-row"><span class="watch-team">White Sox</span> <span class="watch-issues">Removed: Sean Newcomb (tired (29p yesterday, 39p in 3d))</span></div><div class="watch-row"><span class="watch-team">Pirates</span> <span class="watch-issues">Removed: Hunter Barco (tired (84p yesterday, 84p in 3d))</span></div><div class="watch-row"><span class="watch-team">Cardinals</span> <span class="watch-issues">Removed: Luis Peralta (tired (26p yesterday, 42p in 3d))</span></div><div class="watch-row"><span class="watch-team">Astros</span> <span class="watch-issues">Removed: Josh Hader (IL/editorial: ESPN) · Removed: Ryan Weiss (tired (54p yesterday, 54p in 3d)) · Removed: Colton Gordon (tired (50p yesterday, 50p in 3d))</span></div><div class="watch-row"><span class="watch-team">Royals</span> <span class="watch-issues">Removed: Carlos Estévez (IL/editorial: ESPN)</span></div><div class="watch-row"><span class="watch-team">Marlins</span> <span class="watch-issues">Removed: Pete Fairbanks (IL/editorial: ESPN) · Removed: Michael Petersen (tired (35p in 3d, back-to-back))</span></div><div class="watch-row"><span class="watch-team">Rockies</span> <span class="watch-issues">Removed: Sammy Peralta (tired (26p yesterday, 42p in 3d)) · Removed: Tanner Gordon (tired (50p yesterday, 50p in 3d))</span></div><div class="watch-row"><span class="watch-team">Rangers</span> <span class="watch-issues">Removed: Alexis Díaz (IL/editorial: ESPN)</span></div>
-</section>
-
-<section>
-  <div class="panel-head">
-    <h2>Bet Tracker — Kalshi Thesis Test</h2>
-    <span class="meta">3 logged</span>
-  </div>
-  
-  <div class="bet-row loss">
-    <span><strong>#1</strong> 2026-04-26</span>
-    <span>Padres @ Diamondbacks (Mexico City) — Padres ML<br>
-      <span class="meta">Padres bullpen blew up in Mexico City — high-altitude run environment exposed the pen. Closer Miller never appeared. Final SD 7 – ARI 12. Paroli base $5.</span>
-    </span>
-    <span class="stake">$5.00 @ None¢</span>
-    <span class="stake">LOSS $-5.00</span>
-  </div>
-  <div class="bet-row win">
-    <span><strong>#2</strong> 2026-04-27</span>
-    <span>Cubs @ Padres — Padres ML<br>
-      <span class="meta">Padres ML cashed despite Mason Miller bases-loaded near-meltdown in the 9th — strikeout ended it. $5 stake → $9.39 won. Profit $4.39 → next Paroli stake $7.20.</span>
-    </span>
-    <span class="stake">$5.00 @ None¢</span>
-    <span class="stake">WIN $+4.39</span>
-  </div>
-  <div class="bet-row loss">
-    <span><strong>#3</strong> 2026-04-28</span>
-    <span>Cubs @ Padres — Padres Yes (Kalshi @ 48¢)<br>
-      <span class="meta">First v1.6.0 value bet — STRONG tag at +5.45% (model 55.2 vs Kalshi eff 49.75). Padres lost. Yes contract paid $0. Paroli ladder reset to $5. One real-world data point against the K=0.10 model — see Phase 7 Tier 2 finding.</span>
-    </span>
-    <span class="stake">$7.20 @ 48¢</span>
-    <span class="stake">LOSS $-7.20</span>
-  </div>
-</section>
-
-<section>
-  <details>
-    <summary><h2 style="display:inline; margin-left:6px;">Methodology</h2> <span class="meta">how the numbers compute</span></summary>
-    <div style="padding:10px 0; font-size:13px; color:var(--text-soft);">
-      <p><strong>Composite</strong> = mean of three normalized scores: LI-weighted FIP (lower better), team RP WAR, team Pitching+. Each metric normalized 0–100 across the 30 teams.</p>
-      <p><strong>LI weights</strong>: top-5 in leverage order × [1.7, 1.4, 1.2, 1.0, 1.0]. Phase 3 PL discounts multiply this by 0.7 for flagged pitchers.</p>
-      <p><strong>Phase 2</strong> removes IL/tired pitchers and refills from FG slots 6-8 before composite math. <strong>Phase 5b</strong> applies same-day removal+refill for "no [Closer] today" PL signals.</p>
-      <p><strong>Swing Score</strong> = 0.90 × |BE_adjusted| + 0.10 × PP, where BE = composite gap between teams and PP = 0.7 × U-shape vegas + 0.3 × clamp(avg starter ERA). Threshold for KEY = 60.</p>
-      <p><strong>BE adjustment</strong> (Phase 5): opponent-offense modifier ×0.95 to ×1.05 based on opposing wRC+ vs L/R weighted by pen handedness mix.</p>
-      <p><strong>Kalshi value</strong>: our_prob − Kalshi_post_fee_implied_prob. our_prob = 0.5 + (BE / 100) × K, K = 0.10 (Phase 7 to calibrate empirically). Threshold for STRONG = +4%, MARGINAL = +2%.</p>
-      <p style="color:var(--muted); margin-top:14px;">Methodology version: v1.6.0-phase5b</p>
-    </div>
-  </details>
-</section>
-
-<footer style="text-align:center; color:var(--muted); font-size:11px; margin-top:30px;">
-  Generated 2026-04-29T16:02:21.351589+00:00 ·
-  Source: <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:var(--link);">paul-bbbullpen</a>
-</footer>
+<div class="phase7-banner">
+<strong>Phase 7 advisory:</strong> Tier 2 backtest (4,857 games, 2024+2025) found that bullpen edge has essentially zero independent predictive value after controlling for offense + rotation gap (K_LPM = −0.006, 95% CI [−0.10, +0.09]). Production K stays at 0.10 pending real-world bet tracking, but treat all "value %" annotations as <em>directional</em>, not literal. See research/k_calibration/reports/tier2-with-controls.md for details.
 </div>
+
+
+<section class="live-alerts-panel" id="live-alerts-panel">
+  <div class="live-alerts-header">
+    <h2><span class="live-dot"></span>Live Bullpen Alerts</h2>
+    <span class="live-alerts-formula">trigger: 6th+ · within 1 run · BE ≥ 40</span>
+    <span class="live-alerts-meta">populated by /bbbullpen-now alerter (every 20 min, 3 PM-3 AM ET)</span>
+  </div>
+  <div id="live-alerts-list">
+    <div class="live-alerts-empty">No live games are currently scoring with bullpen mismatches above the threshold. The panel pulses red when active alerts exist.</div>
+  </div>
+</section>
+
+
+<section class="key-games-panel">
+  <div class="key-games-header">
+    <h2>Key Bullpen Games — Next 3 Days</h2>
+    <span class="key-games-formula">Swing = 0.90 × BE + 0.10 × PP · threshold ≥ 60</span>
+    <span class="key-games-meta">0 flagged / 15 scored / 24 deferred</span>
+  </div>
+  <div class="key-games-list">
+<div class="below-threshold-banner">
+  <strong>No games cleared the Swing Score 60 threshold today.</strong> Showing the top-scoring matchup for context.
+</div>
+<div class="below-threshold-card">
+  <div class="key-game-rank">—</div>
+  <div>
+    <div class="key-game-line1"><span class="below-threshold-tag">TOP — BELOW THRESHOLD</span>2026-04-29 · Cubs @ Padres</div>
+    <div class="key-game-line2">
+      Swing 55.6 · BE +58.0 <strong>Padres</strong> · PP 34.9 · Total 9.0
+    </div>
+  </div>
+  <div style="text-align:right;">
+    <div class="key-game-swing">56</div>
+    <div class="key-game-swing-label">Swing</div>
+  </div>
+</div>
+</div>
+</section>
+
+
+<section class="watchlist-panel">
+  <div class="watchlist-header">
+    <h2>Bullpen Watchlist</h2>
+    <span class="watchlist-meta">17 teams · today's removals + active PL discounts</span>
+  </div>
+  
+<div class="watchlist-row">
+  <div class="watchlist-team">Padres</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Ron Marinaccio (tired (30p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Wandy Peralta (tired (26p yesterday, 42p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Brewers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Jake Woodford (tired (35p yesterday, 35p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Dodgers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Díaz (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rays</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Edwin Uceta (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Braves</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Raisel Iglesias (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Giants</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Blade Tidwell (tired (47p yesterday, 47p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Tigers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Brant Hurter (tired (30p yesterday, 43p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Yankees</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>David Bednar (tired (40p in 3d, back-to-back))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Diamondbacks</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Andrew Hoffmann (tired (38p yesterday, 38p in 3d))</div><div><span class="watchlist-tag injured">IL</span>Yilber Díaz (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">White Sox</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sean Newcomb (tired (29p yesterday, 39p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Pirates</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Hunter Barco (tired (84p yesterday, 84p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Cardinals</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Luis Peralta (tired (26p yesterday, 42p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Astros</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Josh Hader (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Ryan Weiss (tired (54p yesterday, 54p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Colton Gordon (tired (50p yesterday, 50p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Royals</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Carlos Estévez (IL/editorial: ESPN)</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Marlins</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Pete Fairbanks (IL/editorial: ESPN)</div><div><span class="watchlist-tag tired">TIRED</span>Michael Petersen (tired (35p in 3d, back-to-back))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rockies</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag tired">TIRED</span>Sammy Peralta (tired (26p yesterday, 42p in 3d))</div><div><span class="watchlist-tag tired">TIRED</span>Tanner Gordon (tired (50p yesterday, 50p in 3d))</div></div>
+</div>
+
+<div class="watchlist-row">
+  <div class="watchlist-team">Rangers</div>
+  <div class="watchlist-issues"><div><span class="watchlist-tag injured">IL</span>Alexis Díaz (IL/editorial: ESPN)</div></div>
+</div>
+</section>
+
+
+<h2 style="font-size:16px; margin-top:20px; margin-bottom:8px;">Team Rankings</h2>
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th class="left">Team</th>
+  <th>Composite</th>
+  <th>LI-FIP</th>
+  <th>WAR</th>
+  <th>P+</th>
+  <th>LHP%</th>
+  <th class="left">Top-5 (CL → MR)</th>
+</tr>
+</thead>
+<tbody>
+
+<tr>
+  <td class="rank">1</td>
+  <td class="left team-name">Padres</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:100%"></span></span>100.0</td>
+  <td>3.11</td>
+  <td>4.6</td>
+  <td>107</td>
+  <td>23%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Mason Miller</span> <span class="reliever-stats">56 IP · 1.97 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Adrian Morejon</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">55 IP · 3.23 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Jason Adam</span> <span class="reliever-stats">53 IP · 3.83 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Bradgley Rodriguez</span> <span class="reliever-stats">51 IP · 4.01 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Jeremiah Estrada</span> <span class="reliever-stats">48 IP · 3.27 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">2</td>
+  <td class="left team-name">Mariners</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:76%"></span></span>76.8</td>
+  <td>3.31</td>
+  <td>2.9</td>
+  <td>105</td>
+  <td>34%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Andrés Muñoz</span> <span class="reliever-stats">52 IP · 3.07 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Matt Brash</span> <span class="reliever-stats">51 IP · 3.16 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Jose A. Ferrer</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">54 IP · 3.32 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Eduard Bazardo</span> <span class="reliever-stats">53 IP · 3.76 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Gabe Speier</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">47 IP · 3.47 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">3</td>
+  <td class="left team-name">Phillies</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:71%"></span></span>71.4</td>
+  <td>3.53</td>
+  <td>3.1</td>
+  <td>104</td>
+  <td>16%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Jhoan Duran</span> <span class="reliever-stats">48 IP · 2.53 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Brad Keller</span> <span class="reliever-stats">55 IP · 4.28 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">José Alvarado</span> <span class="reliever-stats">51 IP · 3.30 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Tim Mayza</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 4.12 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Orion Kerkering</span> <span class="reliever-stats">48 IP · 3.68 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">4</td>
+  <td class="left team-name">Red Sox</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:67%"></span></span>67.7</td>
+  <td>3.56</td>
+  <td>2.9</td>
+  <td>103</td>
+  <td>42%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Aroldis Chapman</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 2.88 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Garrett Whitlock</span> <span class="reliever-stats">57 IP · 3.19 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Zack Kelly</span> <span class="reliever-stats">51 IP · 4.34 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Greg Weissert</span> <span class="reliever-stats">50 IP · 4.11 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Danny Coulombe</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 3.83 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">5</td>
+  <td class="left team-name">Brewers</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:66%"></span></span>66.8</td>
+  <td>3.58</td>
+  <td>3.0</td>
+  <td>103</td>
+  <td>34%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Abner Uribe</span> <span class="reliever-stats">60 IP · 3.34 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Trevor Megill</span> <span class="reliever-stats">53 IP · 3.23 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Aaron Ashby</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">55 IP · 3.69 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Angel Zerpa</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">52 IP · 3.83 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Grant Anderson</span> <span class="reliever-stats">51 IP · 4.19 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">6</td>
+  <td class="left team-name">Blue Jays</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:65%"></span></span>65.5</td>
+  <td>3.69</td>
+  <td>2.6</td>
+  <td>105</td>
+  <td>39%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Louis Varland</span> <span class="reliever-stats">55 IP · 3.39 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Tyler Rogers</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">61 IP · 3.93 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Jeff Hoffman</span> <span class="reliever-stats">52 IP · 3.45 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Braydon Fisher</span> <span class="reliever-stats">51 IP · 3.94 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Mason Fluharty</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">47 IP · 3.90 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">7</td>
+  <td class="left team-name">Dodgers</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:64%"></span></span>64.8</td>
+  <td>3.81</td>
+  <td>2.7</td>
+  <td>106</td>
+  <td>66%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Tanner Scott</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 3.53 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Alex Vesia</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 3.59 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Blake Treinen</span> <span class="reliever-stats">49 IP · 4.01 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Will Klein</span> <span class="reliever-stats">48 IP · 4.12 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Jack Dreyer</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">46 IP · 4.07 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">8</td>
+  <td class="left team-name">Rays</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:61%"></span></span>61.4</td>
+  <td>3.56</td>
+  <td>3.1</td>
+  <td>99</td>
+  <td>17%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Bryan Baker</span> <span class="reliever-stats">52 IP · 3.66 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Griffin Jax</span> <span class="reliever-stats">55 IP · 2.90 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Garrett Cleavinger</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">46 IP · 3.48 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Cole Sulser</span> <span class="reliever-stats">50 IP · 4.22 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Kevin Kelly</span> <span class="reliever-stats">46 IP · 3.87 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">9</td>
+  <td class="left team-name">Braves</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:56%"></span></span>56.5</td>
+  <td>3.66</td>
+  <td>2.0</td>
+  <td>102</td>
+  <td>38%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Robert Suarez</span> <span class="reliever-stats">55 IP · 3.37 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Dylan Lee</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">53 IP · 3.48 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Tyler Kinley</span> <span class="reliever-stats">51 IP · 3.89 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Aaron Bummer</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 3.80 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Joel Payamps</span><span class="pitcher-badge new">NEW</span> <span class="reliever-stats">46 IP · 4.09 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">10</td>
+  <td class="left team-name">Mets</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:49%"></span></span>50.1</td>
+  <td>3.64</td>
+  <td>2.2</td>
+  <td>98</td>
+  <td>33%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Devin Williams</span> <span class="reliever-stats">53 IP · 3.11 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Luke Weaver</span> <span class="reliever-stats">55 IP · 3.94 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Brooks Raley</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 3.79 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">A.J. Minter</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">44 IP · 3.58 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Huascar Brazobán</span> <span class="reliever-stats">49 IP · 4.00 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">11</td>
+  <td class="left team-name">Giants</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:49%"></span></span>50.1</td>
+  <td>3.66</td>
+  <td>1.5</td>
+  <td>101</td>
+  <td>15%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Ryan Walker</span> <span class="reliever-stats">52 IP · 3.31 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Erik Miller</span> <span class="reliever-stats">51 IP · 3.59 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Keaton Winn</span> <span class="reliever-stats">50 IP · 3.61 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Caleb Kilian</span> <span class="reliever-stats">48 IP · 4.18 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Matt Gage</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">47 IP · 3.98 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">12</td>
+  <td class="left team-name">Tigers</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:48%"></span></span>48.8</td>
+  <td>3.86</td>
+  <td>1.9</td>
+  <td>102</td>
+  <td>18%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Kenley Jansen</span> <span class="reliever-stats">49 IP · 4.21 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Will Vest</span> <span class="reliever-stats">55 IP · 3.24 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Kyle Finnegan</span> <span class="reliever-stats">52 IP · 4.04 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Tyler Holton</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">59 IP · 3.97 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Drew Anderson</span> <span class="reliever-stats">47 IP · 3.88 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">13</td>
+  <td class="left team-name">Guardians</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:48%"></span></span>48.7</td>
+  <td>3.64</td>
+  <td>2.5</td>
+  <td>96</td>
+  <td>34%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Cade Smith</span> <span class="reliever-stats">57 IP · 2.82 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Hunter Gaddis</span> <span class="reliever-stats">53 IP · 4.11 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Erik Sabrowski</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">53 IP · 3.92 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Tim Herrin</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 3.86 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Shawn Armstrong</span> <span class="reliever-stats">47 IP · 3.97 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">14</td>
+  <td class="left team-name">Orioles</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:46%"></span></span>46.4</td>
+  <td>3.76</td>
+  <td>2.1</td>
+  <td>98</td>
+  <td>35%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Ryan Helsley</span> <span class="reliever-stats">53 IP · 3.30 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Andrew Kittredge</span> <span class="reliever-stats">53 IP · 3.70 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Rico Garcia</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">52 IP · 4.23 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Keegan Akin</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 4.07 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Anthony Nunez</span> <span class="reliever-stats">50 IP · 3.78 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">15</td>
+  <td class="left team-name">Yankees</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:44%"></span></span>45.1</td>
+  <td>3.89</td>
+  <td>1.5</td>
+  <td>102</td>
+  <td>19%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Fernando Cruz</span> <span class="reliever-stats">52 IP · 3.56 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Tim Hill</span> <span class="reliever-stats">53 IP · 4.26 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Brent Headrick</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 3.89 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Camilo Doval</span> <span class="reliever-stats">51 IP · 3.64 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Paul Blackburn</span><span class="pitcher-badge new">NEW</span> <span class="reliever-stats">43 IP · 4.25 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">16</td>
+  <td class="left team-name">Cubs</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:44%"></span></span>44.8</td>
+  <td>3.95</td>
+  <td>1.4</td>
+  <td>103</td>
+  <td>16%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Daniel Palencia</span> <span class="reliever-stats">44 IP · 3.70 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Phil Maton</span> <span class="reliever-stats">54 IP · 4.09 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Ben Brown</span> <span class="reliever-stats">55 IP · 3.47 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Jacob Webb</span> <span class="reliever-stats">49 IP · 4.51 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Hoby Milner</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 4.18 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">17</td>
+  <td class="left team-name">Athletics</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:40%"></span></span>40.8</td>
+  <td>4.05</td>
+  <td>1.9</td>
+  <td>100</td>
+  <td>20%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Jack Perkins</span> <span class="reliever-stats">54 IP · 3.80 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Joel Kuhnel</span> <span class="reliever-stats">53 IP · 4.00 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Hogan Harris</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">54 IP · 4.46 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Mark Leiter Jr.</span> <span class="reliever-stats">50 IP · 4.02 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Justin Sterner</span> <span class="reliever-stats">48 IP · 4.07 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">18</td>
+  <td class="left team-name">Diamondbacks</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:40%"></span></span>40.5</td>
+  <td>3.99</td>
+  <td>1.1</td>
+  <td>102</td>
+  <td>0%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Paul Sewald</span> <span class="reliever-stats">52 IP · 4.31 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Jonathan Loáisiga</span> <span class="reliever-stats">50 IP · 3.68 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Juan Morillo</span> <span class="reliever-stats">53 IP · 4.12 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Taylor Clarke</span> <span class="reliever-stats">51 IP · 4.25 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Kevin Ginkel</span> <span class="reliever-stats">50 IP · 3.44 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">19</td>
+  <td class="left team-name">White Sox</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:39%"></span></span>39.6</td>
+  <td>3.94</td>
+  <td>2.3</td>
+  <td>96</td>
+  <td>14%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Seranthony Domínguez</span> <span class="reliever-stats">51 IP · 4.23 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Grant Taylor</span> <span class="reliever-stats">64 IP · 3.01 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Jordan Leasure</span> <span class="reliever-stats">52 IP · 4.51 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Jordan Hicks</span> <span class="reliever-stats">51 IP · 4.20 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Bryan Hudson</span><span class="pitcher-badge new">NEW</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">46 IP · 4.11 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">20</td>
+  <td class="left team-name">Pirates</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:38%"></span></span>39.0</td>
+  <td>3.89</td>
+  <td>1.9</td>
+  <td>97</td>
+  <td>38%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Dennis Santana</span> <span class="reliever-stats">55 IP · 3.93 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Gregory Soto</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">52 IP · 3.46 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Isaac Mattson</span> <span class="reliever-stats">51 IP · 4.34 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Mason Montgomery</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 3.71 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Yohan Ramírez</span> <span class="reliever-stats">47 IP · 4.10 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">21</td>
+  <td class="left team-name">Cardinals</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:35%"></span></span>35.4</td>
+  <td>3.99</td>
+  <td>1.0</td>
+  <td>100</td>
+  <td>38%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Riley O&#x27;Brien</span> <span class="reliever-stats">53 IP · 3.56 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">JoJo Romero</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">53 IP · 3.90 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Ryne Stanek</span> <span class="reliever-stats">50 IP · 4.09 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">George Soriano</span> <span class="reliever-stats">49 IP · 4.36 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Justin Bruihl</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">48 IP · 4.46 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">22</td>
+  <td class="left team-name">Astros</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:27%"></span></span>27.8</td>
+  <td>4.00</td>
+  <td>1.4</td>
+  <td>95</td>
+  <td>35%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Bryan Abreu</span> <span class="reliever-stats">54 IP · 3.54 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Enyel De Los Santos</span> <span class="reliever-stats">51 IP · 4.31 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Bryan King</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">54 IP · 3.84 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Steven Okert</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 4.09 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">AJ Blubaugh</span><span class="pitcher-badge new">NEW</span> <span class="reliever-stats">46 IP · 4.60 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">23</td>
+  <td class="left team-name">Royals</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:27%"></span></span>27.6</td>
+  <td>3.95</td>
+  <td>1.6</td>
+  <td>93</td>
+  <td>42%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Lucas Erceg</span> <span class="reliever-stats">53 IP · 3.77 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Matt Strahm</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">54 IP · 3.70 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Daniel Lynch IV</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 4.24 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">John Schreiber</span> <span class="reliever-stats">52 IP · 4.29 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Nick Mears</span><span class="pitcher-badge new">NEW</span> <span class="reliever-stats">48 IP · 3.94 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">24</td>
+  <td class="left team-name">Twins</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:26%"></span></span>26.6</td>
+  <td>3.98</td>
+  <td>1.6</td>
+  <td>93</td>
+  <td>30%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Cole Sands</span> <span class="reliever-stats">55 IP · 3.85 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Justin Topa</span> <span class="reliever-stats">51 IP · 3.91 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Eric Orze</span> <span class="reliever-stats">51 IP · 4.03 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Taylor Rogers</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 4.20 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Kody Funderburk</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 4.07 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">25</td>
+  <td class="left team-name">Reds</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:24%"></span></span>25.2</td>
+  <td>4.25</td>
+  <td>1.5</td>
+  <td>96</td>
+  <td>15%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Emilio Pagán</span> <span class="reliever-stats">54 IP · 4.36 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Tony Santillan</span> <span class="reliever-stats">57 IP · 4.40 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Graham Ashcraft</span> <span class="reliever-stats">53 IP · 3.71 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Brock Burke</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">51 IP · 4.03 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Connor Phillips</span> <span class="reliever-stats">50 IP · 4.72 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">26</td>
+  <td class="left team-name">Marlins</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:22%"></span></span>23.1</td>
+  <td>4.04</td>
+  <td>0.6</td>
+  <td>96</td>
+  <td>29%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Tyler Phillips</span> <span class="reliever-stats">55 IP · 4.27 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Calvin Faucher</span> <span class="reliever-stats">51 IP · 3.99 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Anthony Bender</span> <span class="reliever-stats">51 IP · 3.91 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Andrew Nardi</span><span class="pitcher-badge new">NEW</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">46 IP · 3.87 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">John King</span><span class="pitcher-badge new">NEW</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">45 IP · 3.99 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">27</td>
+  <td class="left team-name">Rockies</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:20%"></span></span>20.9</td>
+  <td>4.42</td>
+  <td>0.9</td>
+  <td>99</td>
+  <td>0%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Victor Vodnik</span> <span class="reliever-stats">52 IP · 4.36 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Jimmy Herget</span> <span class="reliever-stats">63 IP · 4.33 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Antonio Senzatela</span> <span class="reliever-stats">49 IP · 4.78 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Juan Mejia</span> <span class="reliever-stats">51 IP · 4.39 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Jaden Hill</span> <span class="reliever-stats">48 IP · 4.27 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">28</td>
+  <td class="left team-name">Rangers</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:14%"></span></span>15.5</td>
+  <td>4.37</td>
+  <td>0.3</td>
+  <td>98</td>
+  <td>33%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Jakob Junis</span> <span class="reliever-stats">52 IP · 3.96 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Cole Winn</span> <span class="reliever-stats">51 IP · 4.56 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Jacob Latz</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 4.27 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Tyler Alexander</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">46 IP · 4.34 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Gavin Collyer</span> <span class="reliever-stats">52 IP · 4.97 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">29</td>
+  <td class="left team-name">Angels</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:9%"></span></span>10.1</td>
+  <td>4.29</td>
+  <td>0.6</td>
+  <td>93</td>
+  <td>33%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Sam Bachman</span> <span class="reliever-stats">51 IP · 4.38 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Chase Silseth</span> <span class="reliever-stats">48 IP · 4.26 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Kirby Yates</span> <span class="reliever-stats">47 IP · 3.98 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Brent Suter</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">52 IP · 4.40 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Drew Pomeranz</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">50 IP · 4.43 FIP</span></div></td>
+</tr>
+
+<tr>
+  <td class="rank">30</td>
+  <td class="left team-name">Nationals</td>
+  <td class="composite-cell"><span class="composite-bar"><span style="width:0%"></span></span>1.3</td>
+  <td>4.37</td>
+  <td>0.3</td>
+  <td>91</td>
+  <td>17%</td>
+  <td class="relievers"><div class="reliever-line"><span class="role-tag role-CL">CL</span><span class="reliever-name">Clayton Beeter</span> <span class="reliever-stats">44 IP · 4.17 FIP</span></div><div class="reliever-line"><span class="role-tag role-S1">S1</span><span class="reliever-name">Cole Henry</span> <span class="reliever-stats">39 IP · 5.03 FIP</span></div><div class="reliever-line"><span class="role-tag role-S2">S2</span><span class="reliever-name">Gus Varland</span> <span class="reliever-stats">52 IP · 4.11 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">Brad Lord</span> <span class="reliever-stats">55 IP · 4.23 FIP</span></div><div class="reliever-line"><span class="role-tag role-MR">MR</span><span class="reliever-name">PJ Poulin</span><span class="pitcher-badge lhp">L</span> <span class="reliever-stats">49 IP · 4.40 FIP</span></div></td>
+</tr>
+
+</tbody>
+</table>
+
+
+<section class="bet-tracker-panel">
+  <div class="bet-tracker-header">
+    <h2>Bet Tracker — Kalshi Thesis Test</h2>
+    <span class="bet-tracker-meta">$5 base · top-ranked edge of the day</span>
+  </div>
+  
+<div class="bet-tracker-summary">
+  <div class="stat"><span class="stat-label">Settled</span><span class="stat-val">1–2</span></div>
+  <div class="stat"><span class="stat-label">Pending</span><span class="stat-val pend">0</span></div>
+  <div class="stat"><span class="stat-label">Total Wagered</span><span class="stat-val">$17.20</span></div>
+  <div class="stat"><span class="stat-label">P/L (settled)</span><span class="stat-val loss">−$7.81</span></div>
+  <div class="stat"><span class="stat-label">Streak</span><span class="stat-val" style="color:#b91c1c;">1L</span></div>
+</div>
+
+  
+<div class="paroli-banner">
+  <div>
+    <div class="paroli-label">Next Daily Stake (Paroli ladder)</div>
+    <div class="paroli-stake">$5.00 <span style="font-size:11px; font-weight:400; color:#78350f;">— Reset to base</span></div>
+  </div>
+  <div class="paroli-rules">
+    <strong>Win:</strong> next stake = current + 50% × profit · <strong>Loss:</strong> reset to $5 · <strong>Cap:</strong> $20
+  </div>
+</div>
+
+  
+<div class="mode-grid">
+  <div class="mode-card">
+    <div class="mode-label">Daily Mode (Paroli ladder, base $5)</div>
+    <div class="mode-stats">
+      Settled: <strong>1–2</strong> ·
+      Pending: <strong>0</strong> ·
+      Wagered: <strong>$17.20</strong> ·
+      P/L: <span style="color:#b91c1c; font-weight:700;">−$7.81</span>
+    </div>
+    <div class="mode-rules">Slate must have BE ≥ 55 for Daily recommendation. Stake follows ladder.</div>
+  </div>
+  <div class="mode-card">
+    <div class="mode-label">Live Opportunistic Mode</div>
+    <div class="mode-stats">
+      Settled: <strong>0–0</strong> ·
+      Pending: <strong>0</strong> ·
+      Wagered: <strong>$0.00</strong> ·
+      P/L: <span style="font-weight:700;">+$0.00</span>
+    </div>
+    <div class="mode-rules">$2 stake on /bbbullpen-now alerts in 6th+, within 1 run, BE ≥ 50, NOT today's Daily bet.</div>
+  </div>
+</div>
+
+  
+<table class="bet-table">
+<thead>
+<tr><th>#</th><th>Date</th><th>Mode</th><th>Game</th><th>Side</th><th>Stake</th><th>Max Payout</th><th>Implied %</th><th>Result</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>2026-04-26</td>
+  <td><span class="bet-mode-tag">DAILY</span></td>
+  <td>Padres @ Diamondbacks (Mexico City)</td>
+  <td>Padres ML</td>
+  <td>$5.00</td>
+  <td>—</td>
+  <td>—</td>
+  <td><span class="bet-result-tag loss">LOSS</span></td>
+  <td><em style="color:#374151;">Padres bullpen blew up in Mexico City — high-altitude run environment exposed the pen. Closer Miller never appeared. Final SD 7 – ARI 12. Paroli base $5.</em></td>
+</tr>
+
+<tr>
+  <td>2</td>
+  <td>2026-04-27</td>
+  <td><span class="bet-mode-tag">DAILY</span></td>
+  <td>Cubs @ Padres</td>
+  <td>Padres ML</td>
+  <td>$5.00</td>
+  <td>—</td>
+  <td>53.3%</td>
+  <td><span class="bet-result-tag win">WIN</span></td>
+  <td><em style="color:#374151;">Padres ML cashed despite Mason Miller bases-loaded near-meltdown in the 9th — strikeout ended it. $5 stake → $9.39 won. Profit $4.39 → next Paroli stake $7.20.</em></td>
+</tr>
+
+<tr>
+  <td>3</td>
+  <td>2026-04-28</td>
+  <td><span class="bet-mode-tag">DAILY</span></td>
+  <td>Cubs @ Padres</td>
+  <td>Padres Yes (Kalshi @ 48¢)</td>
+  <td>$7.20</td>
+  <td>$14.47</td>
+  <td>49.8% (post-fee)</td>
+  <td><span class="bet-result-tag loss">LOSS</span></td>
+  <td><em style="color:#374151;">First v1.6.0 value bet — STRONG tag at +5.45% (model 55.2 vs Kalshi eff 49.75). Padres lost. Yes contract paid $0. Paroli ladder reset to $5. One real-world data point against the K=0.10 model — see Phase 7 Tier 2 finding.</em></td>
+</tr>
+</tbody>
+</table>
+
+  
+<div class="bet-tracker-thesis">
+  <strong>Thesis:</strong> bullpens are the variable Vegas underweights — but Phase 7 Tier 2 just empirically tested this and found bullpen edge has near-zero independent predictive value after team-strength controls. <strong>Sample size goal:</strong> 50+ settled bets per mode before any read on edge. <strong>Concentration risk:</strong> early Daily bets are all on Padres (model has them #1 nearly every refresh). Daily and Live modes are tracked separately because they price against different markets — Daily fights pre-game sharps, Live fights mid-game traders.
+</div>
+
+</section>
+
+
+<section class="watchlist-panel" style="border-color:#d1d5db; border-left-color:#6b7280; background:#f9fafb; margin-top:24px;">
+  <div class="watchlist-header">
+    <h2 style="color:#374151;">Missed Live Opportunities <span style="font-weight:400; color:#6b7280;">— for reference, long-term tracking</span></h2>
+    <span class="watchlist-meta" style="color:#6b7280;">populated by /bbbullpen-now scheduled task</span>
+  </div>
+  <div class="watchlist-summary" style="color:#374151;">
+    <em>Schema: timestamp · game · edge team · BE · inning/score at alert · final outcome · would-have W/L.</em>
+    Every qualifying live alert (6th+, ±1 run, BE ≥ 40) gets logged here with the eventual W/L outcome — even when no bet was placed.
+  </div>
+</section>
+
+
+<details>
+<summary>Methodology &amp; sources</summary>
+<div class="methodology">
+  <h3>Bullpen rankings</h3>
+  <p>Three forward-looking ingredients, each normalized 0–100 across the 30 teams, then averaged: <strong>LI-weighted projected FIP</strong> (closer 1.7×, primary setup 1.4×, secondary setup 1.2×, middle 1.0×); <strong>projected ROS WAR</strong> (Steamer/ZiPS blend, captures depth); <strong>current-season Pitching+</strong> (Stuff+ × Location+).</p>
+
+  <h3>Phase 2 — Editorial + availability layer</h3>
+  <p>ESPN closer org chart parses each team's IL list and editorial section. Razzball pitch-count chart tags pitchers as "tired" via the deterministic ESPN formula (≥25 pitches yesterday, ≥35 over 3 days, or back-to-back appearances). Both layers REMOVE pitchers from the top-5 before composite math, then refill from FG slots 6-8. Watchlist captures every removal.</p>
+
+  <h3>Phase 3 — Pitcher List math layer</h3>
+  <p>RP Roundup parser scans editorial sentences for Tier A signals (velocity/stuff/command decline → 0.7× LI-weight discount, single mention triggers) and Tier B (concerning/shaky/wobbly → requires 2+ mentions in 7 days). Recovery patterns (welcome back, first save since) undo active discounts. Closed-set pitcher-name matching against the FG roster. Persistence log at <code>pl_history.jsonl</code>.</p>
+
+  <h3>Phase 4 — Key Games + Kalshi value</h3>
+  <p><code>Swing Score = 0.90 × BE + 0.10 × PP</code></p>
+  <p><strong>BE</strong> = composite gap. <strong>PP</strong> = 0.70 × PP_vegas + 0.30 × PP_starter. PP_vegas uses a U-shape (trough at total=8.5, peaks at low/high totals — leverage in close games, volume in slugfests). Threshold ≥ 60 for KEY tag.</p>
+  <p><strong>v1.6.0 Kalshi value:</strong> <code>our_prob = 0.5 + (BE / 100) × K</code> with K = 0.10. Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
+
+  <h3>Phase 5 — Opponent + same-day adjustments + dynamic refill</h3>
+  <p>Opponent-offense modifier (×0.95 to ×1.05 on BE) based on opposing team's 30-day wRC+ vs L/R weighted by the BE-favored bullpen's handedness mix. PL Streamer Rankings parsed for "no [Closer] today" signals (dynamic top-8 refill, recompute LI-FIP) and "left-handed pockets" (+3 handedness). Tonight's games only.</p>
+
+  <h3>Phase 7 status — empirical K calibration</h3>
+  <p><strong>Tier 1 (4,857 games, 2024+2025):</strong> naive K = 0.182, 95% CI [0.14, 0.22]. Initial reaction: K=0.10 is too low. <strong>Tier 2 (with team-strength controls):</strong> K_LPM collapses to −0.006, 95% CI [−0.10, +0.09]. Bullpen edge has essentially zero independent predictive value once offense + rotation gap are controlled. <strong>Tier 2.3 (light) robustness:</strong> VIF on BE = 1.77 (no multicollinearity); close-games filter doesn't rescue the signal. Production K stays at 0.10 pending real-world bet tracking; "value %" labels treated as <em>directional</em> only.</p>
+
+  <h3>Sources</h3>
+  <p>
+    • <a href="https://www.fangraphs.com/depthcharts.aspx?position=RP" target="_blank">FanGraphs RP Depth Charts</a> — projected IP/FIP/ERA/WAR<br>
+    • <a href="https://www.fangraphs.com/leaders/major-league" target="_blank">FanGraphs Pitching+ leaderboard</a> — Stuff+/Location+/Pitching+<br>
+    • <a href="https://www.espn.com/fantasy/baseball/flb/story?page=REcloserorgchart" target="_blank">ESPN Closer Org Chart</a> — IL list + editorial section<br>
+    • <a href="https://razzball.com/bullpen-chart/" target="_blank">Razzball Bullpen Chart</a> — 7-day pitch counts, tired detection<br>
+    • <a href="https://pitcherlist.com/category/fantasy/relief-pitchers/" target="_blank">Pitcher List RP Roundup + Streamer Rankings</a> — qualitative editorial layer<br>
+    • <a href="https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard" target="_blank">ESPN MLB scoreboard JSON</a> — schedule + probables + Vegas totals<br>
+    • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
+  </p>
+
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-04-29T16:37:26.805142+00:00</p>
+</div>
+</details>
+
+
+<footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
+  Generated 2026-04-29T16:37:26.805155+00:00 · auto-pushed from
+  <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
+  via refresh-dashboard.yml
+</footer>
 </body>
 </html>
