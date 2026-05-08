@@ -162,8 +162,8 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 
 
-<div class="phase7-banner">
-<strong>Phase 7 advisory:</strong> Tier 2 backtest (4,857 games, 2024+2025) found that bullpen edge has essentially zero independent predictive value after controlling for offense + rotation gap (K_LPM = −0.006, 95% CI [−0.10, +0.09]). Production K stays at 0.10 pending real-world bet tracking, but treat all "value %" annotations as <em>directional</em>, not literal. See research/k_calibration/reports/tier2-with-controls.md for details.
+<div class="phase7-banner" style="background:linear-gradient(90deg,#ecfdf5 0%,#fff 100%); border-color:#86efac; border-left-color:#16a34a; color:#065f46;">
+<strong style="color:#15803d;">Phase 7 Tier 3+ update:</strong> Prior tiers' "K → 0 after controls" was a methodology bug — the historical composites were measuring the rotation, not the bullpen. Refit on rebuilt bullpen-only composites, restricted to the live alerter's trigger (within 1 run entering 7th, BE ≥ 40, n=433): <strong>BE-favored team wins 60.5%</strong>. Lead-controlled K_LPM = <strong>+0.20 (p&lt;0.001)</strong>. By lead state: leads 81%, tied 59%, trails 38% (now filtered out at the alerter). Production K bumped to 0.20. See <code>research/k_calibration/reports/hypothesis-grid.md</code>.
 </div>
 
 
@@ -698,13 +698,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
   <h3>Phase 4 — Key Games + Kalshi value</h3>
   <p><code>Swing Score = 0.90 × BE + 0.10 × PP</code></p>
   <p><strong>BE</strong> = composite gap. <strong>PP</strong> = 0.70 × PP_vegas + 0.30 × PP_starter. PP_vegas uses a U-shape (trough at total=8.5, peaks at low/high totals — leverage in close games, volume in slugfests). Threshold ≥ 60 for KEY tag.</p>
-  <p><strong>v1.6.0 Kalshi value:</strong> <code>our_prob = 0.5 + (BE / 100) × K</code> with K = 0.10. Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
+  <p><strong>v1.6.0 Kalshi value:</strong> <code>our_prob = 0.5 + (BE / 100) × K</code> with K = 0.20 (calibrated empirically Tier 3+, see banner above). Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
 
   <h3>Phase 5 — Opponent + same-day adjustments + dynamic refill</h3>
   <p>Opponent-offense modifier (×0.95 to ×1.05 on BE) based on opposing team's 30-day wRC+ vs L/R weighted by the BE-favored bullpen's handedness mix. PL Streamer Rankings parsed for "no [Closer] today" signals (dynamic top-8 refill, recompute LI-FIP) and "left-handed pockets" (+3 handedness). Tonight's games only.</p>
 
   <h3>Phase 7 status — empirical K calibration</h3>
-  <p><strong>Tier 1 (4,857 games, 2024+2025):</strong> naive K = 0.182, 95% CI [0.14, 0.22]. Initial reaction: K=0.10 is too low. <strong>Tier 2 (with team-strength controls):</strong> K_LPM collapses to −0.006, 95% CI [−0.10, +0.09]. Bullpen edge has essentially zero independent predictive value once offense + rotation gap are controlled. <strong>Tier 2.3 (light) robustness:</strong> VIF on BE = 1.77 (no multicollinearity); close-games filter doesn't rescue the signal. Production K stays at 0.10 pending real-world bet tracking; "value %" labels treated as <em>directional</em> only.</p>
+  <p><strong>Tier 1 (4,857 games, 2024+2025):</strong> naive K = 0.182. <strong>Tier 2 (with team-strength controls):</strong> K_LPM ≈ 0 — looked like the thesis was dead. <strong>Tier 3+ (2026-05-08, methodology fix):</strong> The "composites" up through Tier 2 had been built from each team's top-5 by IP, which is the starting rotation, not the bullpen. Once rebuilt on real reliever data only (<code>rp_season_*.json</code> filtered to GS=0) and restricted to the live alerter's trigger (within 1 entering 7th, BE ≥ 40, n=433): K_LPM = +0.232 unconditioned, +0.202 with lead/trail control (p&lt;0.001 both). Bet-population win rate 60.5%. By lead state: leads 81% (priced-in), tied 59% (cleanest edge), trails 38% (now filtered at the alerter). Production K = 0.20. See <code>research/k_calibration/reports/hypothesis-grid.md</code>.</p>
 
   <h3>Sources</h3>
   <p>
@@ -717,13 +717,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-08T16:11:28.440625+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-08T16:45:07.439568+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-05-08T16:11:28.440634+00:00 · auto-pushed from
+  Generated 2026-05-08T16:45:07.439576+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
