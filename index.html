@@ -161,6 +161,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <div class="snapshot">Snapshot: 2026-05-08 · v1.6.0-phase5b · auto-refreshed daily at 13:00 + 13:30 + 13:35 UTC · <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#6366f1;">source</a></div>
 
 
+
 <div class="phase7-banner">
 <strong>Phase 7 advisory:</strong> Tier 2 backtest (4,857 games, 2024+2025) found that bullpen edge has essentially zero independent predictive value after controlling for offense + rotation gap (K_LPM = −0.006, 95% CI [−0.10, +0.09]). Production K stays at 0.10 pending real-world bet tracking, but treat all "value %" annotations as <em>directional</em>, not literal. See research/k_calibration/reports/tier2-with-controls.md for details.
 </div>
@@ -566,39 +567,41 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <section class="bet-tracker-panel">
   <div class="bet-tracker-header">
     <h2>Bet Tracker — Kalshi Thesis Test</h2>
-    <span class="bet-tracker-meta">$5 base · top-ranked edge of the day</span>
+    <span class="bet-tracker-meta">$3 base · $38 starting bank</span>
   </div>
   
 <div class="bet-tracker-summary">
-  <div class="stat"><span class="stat-label">Settled</span><span class="stat-val">1–2</span></div>
-  <div class="stat"><span class="stat-label">Pending</span><span class="stat-val pend">1</span></div>
-  <div class="stat"><span class="stat-label">Total Wagered</span><span class="stat-val">$22.20</span></div>
-  <div class="stat"><span class="stat-label">P/L (settled)</span><span class="stat-val loss">−$7.81</span></div>
-  <div class="stat"><span class="stat-label">Streak</span><span class="stat-val" style="color:#b91c1c;">1L</span></div>
+  <div class="stat"><span class="stat-label">Bank</span><span class="stat-val win">$38.00</span></div>
+  <div class="stat"><span class="stat-label">Started</span><span class="stat-val">$38.00</span></div>
+  <div class="stat"><span class="stat-label">Settled</span><span class="stat-val">0–0</span></div>
+  <div class="stat"><span class="stat-label">Pending</span><span class="stat-val pend">0</span></div>
+  <div class="stat"><span class="stat-label">Total Wagered</span><span class="stat-val">$0.00</span></div>
+  <div class="stat"><span class="stat-label">P/L (settled)</span><span class="stat-val win">+$0.00</span></div>
+  <div class="stat"><span class="stat-label">Streak</span><span class="stat-val" style="color:#b91c1c;">0</span></div>
 </div>
 
   
 <div class="paroli-banner">
   <div>
     <div class="paroli-label">Next Daily Stake (Paroli ladder)</div>
-    <div class="paroli-stake">$5.00 <span style="font-size:11px; font-weight:400; color:#78350f;">— Reset to base</span></div>
+    <div class="paroli-stake">$3.00 <span style="font-size:11px; font-weight:400; color:#78350f;">— Base</span></div>
   </div>
   <div class="paroli-rules">
-    <strong>Win:</strong> next stake = current + 50% × profit · <strong>Loss:</strong> reset to $5 · <strong>Cap:</strong> $20
+    <strong>Win:</strong> next stake = current + 50% × profit · <strong>Loss:</strong> reset to $3 · <strong>Cap:</strong> $20
   </div>
 </div>
 
   
 <div class="mode-grid">
   <div class="mode-card">
-    <div class="mode-label">Daily Mode (Paroli ladder, base $5)</div>
+    <div class="mode-label">Daily Mode (Paroli ladder, base $3)</div>
     <div class="mode-stats">
-      Settled: <strong>1–2</strong> ·
-      Pending: <strong>1</strong> ·
-      Wagered: <strong>$22.20</strong> ·
-      P/L: <span style="color:#b91c1c; font-weight:700;">−$7.81</span>
+      Settled: <strong>0–0</strong> ·
+      Pending: <strong>0</strong> ·
+      Wagered: <strong>$0.00</strong> ·
+      P/L: <span style="color:#059669; font-weight:700;">+$0.00</span>
     </div>
-    <div class="mode-rules">Slate must have BE ≥ 55 for Daily recommendation. Stake follows ladder.</div>
+    <div class="mode-rules">Bet on live alerts (7th+, ≤1 run, BE ≥ 40). Stake follows the Paroli ladder above.</div>
   </div>
   <div class="mode-card">
     <div class="mode-label">Live Opportunistic Mode</div>
@@ -613,68 +616,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 </div>
 
   
-<table class="bet-table">
-<thead>
-<tr><th>#</th><th>Date</th><th>Mode</th><th>Game</th><th>Side</th><th>Stake</th><th>Max Payout</th><th>Implied %</th><th>Result</th><th>Notes</th></tr>
-</thead>
-<tbody>
-<tr>
-  <td>1</td>
-  <td>2026-04-26</td>
-  <td><span class="bet-mode-tag">DAILY</span></td>
-  <td>Padres @ Diamondbacks (Mexico City)</td>
-  <td>Padres ML</td>
-  <td>$5.00</td>
-  <td>—</td>
-  <td>—</td>
-  <td><span class="bet-result-tag loss">LOSS</span></td>
-  <td><em style="color:#374151;">Padres bullpen blew up in Mexico City — high-altitude run environment exposed the pen. Closer Miller never appeared. Final SD 7 – ARI 12. Paroli base $5.</em></td>
-</tr>
-
-<tr>
-  <td>2</td>
-  <td>2026-04-27</td>
-  <td><span class="bet-mode-tag">DAILY</span></td>
-  <td>Cubs @ Padres</td>
-  <td>Padres ML</td>
-  <td>$5.00</td>
-  <td>$9.39</td>
-  <td>53.3%</td>
-  <td><span class="bet-result-tag win">WIN</span></td>
-  <td><em style="color:#374151;">Padres ML cashed despite Mason Miller bases-loaded near-meltdown in the 9th — strikeout ended it. $5 stake → $9.39 returned. Profit $4.39 → next Paroli stake $7.20.</em></td>
-</tr>
-
-<tr>
-  <td>3</td>
-  <td>2026-04-28</td>
-  <td><span class="bet-mode-tag">DAILY</span></td>
-  <td>Cubs @ Padres</td>
-  <td>Padres Yes (Kalshi @ 48¢)</td>
-  <td>$7.20</td>
-  <td>$14.47</td>
-  <td>49.8% (post-fee)</td>
-  <td><span class="bet-result-tag loss">LOSS</span></td>
-  <td><em style="color:#374151;">First v1.6.0 value bet — STRONG tag at +5.45% (model 55.2 vs Kalshi eff 49.75). Padres lost. Yes contract paid $0. Paroli ladder reset to $5. One real-world data point against the K=0.10 model — see Phase 7 Tier 2 finding.</em></td>
-</tr>
-
-<tr>
-  <td>4</td>
-  <td>2026-04-29</td>
-  <td><span class="bet-mode-tag">DAILY</span></td>
-  <td>Cubs @ Padres</td>
-  <td>Padres Yes (Kalshi)</td>
-  <td>$5.00</td>
-  <td>$9.66</td>
-  <td>51.8% (post-fee)</td>
-  <td><span class="bet-result-tag pending">PENDING</span></td>
-  <td><em style="color:#374151;">Paroli reset to $5 after bet 3 loss. Third straight Padres bet (Cubs @ Padres rubber match). Implied 51.76% post-fee.</em></td>
-</tr>
-</tbody>
-</table>
+<div style="font-size:12px; color:#6b7280; padding:10px; background:#f9fafb; border:1px dashed #d1d5db; border-radius:6px; text-align:center;">
+  <em>No bets logged yet. The first bet appended to <code>bullpen/data/bets.jsonl</code> will appear here.</em>
+</div>
 
   
 <div class="bet-tracker-thesis">
-  <strong>Thesis:</strong> bullpens are the variable Vegas underweights — but Phase 7 Tier 2 just empirically tested this and found bullpen edge has near-zero independent predictive value after team-strength controls. <strong>Sample size goal:</strong> 50+ settled bets per mode before any read on edge. <strong>Concentration risk:</strong> early Daily bets are all on Padres (model has them #1 nearly every refresh). Daily and Live modes are tracked separately because they price against different markets — Daily fights pre-game sharps, Live fights mid-game traders.
+  <strong>Thesis:</strong> bullpens are the variable Vegas underweights — but Phase 7 Tier 2 just empirically tested this and found bullpen edge has near-zero independent predictive value after team-strength controls. <strong>Sample size goal:</strong> 50+ settled bets per mode before any read on edge. Daily and Live modes are tracked separately because they price against different markets — Daily fights pre-game sharps, Live fights mid-game traders.
 </div>
 
 </section>
@@ -769,13 +717,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-08T15:12:05.351399+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-08T16:11:28.440625+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-05-08T15:12:05.351413+00:00 · auto-pushed from
+  Generated 2026-05-08T16:11:28.440634+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
