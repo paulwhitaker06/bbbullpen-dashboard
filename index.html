@@ -167,7 +167,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 
 <div class="phase7-banner" style="background:linear-gradient(90deg,#ecfdf5 0%,#fff 100%); border-color:#86efac; border-left-color:#16a34a; color:#065f46;">
-<strong style="color:#15803d;">v1.7 — FIP- cutover:</strong> Production scale is now <strong>FIP-</strong> (lower better; 100 = league average pen FIP this season). Tier 3+++ refit on FIP- gave <strong>K_LPM = +0.39, p &lt; 0.001</strong>, with cross-season drift of just 0.025 (vs 0.076 on the legacy 0-100 composite — the absolute scale is ~3× more stable across seasons). Bet-population win rate ≈ 60% on the alerter trigger (within 1 entering 7th, FIP- gap ≥ 20). By lead state: leads 81%, tied 59%, trails 38% (filtered out). Threshold for KEY-game tag in the panel below: Swing Score ≥ 30 (was 60 on composite scale). See <code>research/k_calibration/reports/fip-minus-k.md</code>.
+<strong style="color:#15803d;">v1.7 — live-alerts only.</strong> Pre-game Key Games panel removed; this is now a live-betting tool. Production scale is <strong>FIP-</strong> (lower better; 100 = league average pen FIP this season). Tier 3+++ refit gave <strong>K_LPM = +0.39, p &lt; 0.001</strong>; cross-season drift just 0.025 (vs 0.076 on the legacy 0-100 composite). Bet-population win rate ≈ 60% on the alerter trigger (within 1 entering 7th, FIP- gap ≥ 20). By lead state: leads 81%, tied 59%, trails 38% (filtered out). The <em>Candidates Tonight</em> panel below previews games where the FIP- gap is wide enough that a close 7th+ state would fire the alerter. See <code>research/k_calibration/reports/fip-minus-k.md</code>.
 </div>
 
 
@@ -185,24 +185,42 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 <section class="key-games-panel">
   <div class="key-games-header">
-    <h2>Key Bullpen Games — Next 3 Days</h2>
-    <span class="key-games-formula">Swing = 0.90 × |FIP- gap| + 0.10 × PP · threshold ≥ 30</span>
-    <span class="key-games-meta">1 flagged / 15 scored / 30 deferred</span>
+    <h2>Candidates Tonight</h2>
+    <span class="key-games-formula">FIP- gap ≥ 20 = alerter would fire if this game goes close in 7th+</span>
+    <span class="key-games-meta">2 on tonight's slate</span>
   </div>
   <div class="key-games-list">
 <div class="key-game-card">
   <div class="key-game-rank">#1</div>
   <div>
-    <div class="key-game-line1"><span class="key-tag">KEY</span>2026-05-08 · Cardinals @ Padres</div>
+    <div class="key-game-line1"><span class="key-tag">CANDIDATE</span>Rockies @ Phillies · 6:05 PM ET</div>
     <div class="key-game-line2">
-      Swing 64.0 · BE +67.0 <strong>Padres</strong> · PP 37.0 · Total 8.0<br>
-      SP: Michael McGreevy (4.08) vs Griffin Canning (4.52)
+      <strong>Phillies</strong> favored ·
+      FIP- 112.5 (COL) vs
+      89.3 (PHI)
     </div>
-    <div class="key-game-line3">Kalshi: market not yet open or pre-game window has passed</div><div class="key-game-line3">Opp quality adj: ×0.980 (opposing 30-day wRC+ vs Padres pen mix = 90)</div>
+    <div class="key-game-line3">SP: Kyle Freeland vs Aaron Nola · Total 8.5</div>
   </div>
   <div style="text-align:right;">
-    <div class="key-game-swing">64</div>
-    <div class="key-game-swing-label">Swing</div>
+    <div class="key-game-swing">23</div>
+    <div class="key-game-swing-label">FIP- gap</div>
+  </div>
+</div>
+
+<div class="key-game-card">
+  <div class="key-game-rank">#2</div>
+  <div>
+    <div class="key-game-line1"><span class="key-tag">CANDIDATE</span>Cardinals @ Padres · 7:15 PM ET</div>
+    <div class="key-game-line2">
+      <strong>Padres</strong> favored ·
+      FIP- 101.9 (STL) vs
+      80.2 (SD)
+    </div>
+    <div class="key-game-line3">SP: Dustin May vs Randy Vasquez · Total 8.0</div>
+  </div>
+  <div style="text-align:right;">
+    <div class="key-game-swing">22</div>
+    <div class="key-game-swing-label">FIP- gap</div>
   </div>
 </div>
 </div>
@@ -570,8 +588,8 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 <section class="bet-tracker-panel">
   <div class="bet-tracker-header">
-    <h2>Bet Tracker — Kalshi Thesis Test</h2>
-    <span class="bet-tracker-meta">$3 base · $38 starting bank</span>
+    <h2>Bet Tracker</h2>
+    <span class="bet-tracker-meta">$3 base · $38 starting bank · live alerts only</span>
   </div>
   
 <div class="bet-tracker-summary">
@@ -587,35 +605,11 @@ details[open] summary { border-radius: 6px 6px 0 0; }
   
 <div class="paroli-banner">
   <div>
-    <div class="paroli-label">Next Daily Stake (Paroli ladder)</div>
+    <div class="paroli-label">Next Stake (Paroli ladder)</div>
     <div class="paroli-stake">$3.00 <span style="font-size:11px; font-weight:400; color:#78350f;">— Base</span></div>
   </div>
   <div class="paroli-rules">
     <strong>Win:</strong> next stake = current + 50% × profit · <strong>Loss:</strong> reset to $3 · <strong>Cap:</strong> $20
-  </div>
-</div>
-
-  
-<div class="mode-grid">
-  <div class="mode-card">
-    <div class="mode-label">Daily Mode (Paroli ladder, base $3)</div>
-    <div class="mode-stats">
-      Settled: <strong>0–0</strong> ·
-      Pending: <strong>0</strong> ·
-      Wagered: <strong>$0.00</strong> ·
-      P/L: <span style="color:#059669; font-weight:700;">+$0.00</span>
-    </div>
-    <div class="mode-rules">Bet on live alerts (7th+, ≤1 run, BE ≥ 40). Stake follows the Paroli ladder above.</div>
-  </div>
-  <div class="mode-card">
-    <div class="mode-label">Live Opportunistic Mode</div>
-    <div class="mode-stats">
-      Settled: <strong>0–0</strong> ·
-      Pending: <strong>0</strong> ·
-      Wagered: <strong>$0.00</strong> ·
-      P/L: <span style="font-weight:700;">+$0.00</span>
-    </div>
-    <div class="mode-rules">$2 stake on /bbbullpen-now alerts in 6th+, within 1 run, BE ≥ 50, NOT today's Daily bet.</div>
   </div>
 </div>
 
@@ -626,7 +620,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
   
 <div class="bet-tracker-thesis">
-  <strong>Thesis:</strong> bullpens are the variable Vegas underweights — but Phase 7 Tier 2 just empirically tested this and found bullpen edge has near-zero independent predictive value after team-strength controls. <strong>Sample size goal:</strong> 50+ settled bets per mode before any read on edge. Daily and Live modes are tracked separately because they price against different markets — Daily fights pre-game sharps, Live fights mid-game traders.
+  <strong>Live alerts only.</strong> Bets are placed when the alerter fires (7th+ inning, ≤1 run, FIP- gap ≥ 20, BE-favored team not trailing). Stake follows the Paroli ladder above. Sample size goal: 50+ settled bets before reading any edge — Tier 3+++ historical refit suggests ~60% win rate in this regime, but real-world calibration is the tiebreaker.
 </div>
 
 </section>
@@ -804,16 +798,22 @@ details[open] summary { border-radius: 6px 6px 0 0; }
   <h3>Phase 3 — Pitcher List math layer</h3>
   <p>RP Roundup parser scans editorial sentences for Tier A signals (velocity/stuff/command decline → 0.7× LI-weight discount, single mention triggers) and Tier B (concerning/shaky/wobbly → requires 2+ mentions in 7 days). Recovery patterns (welcome back, first save since) undo active discounts. Closed-set pitcher-name matching against the FG roster. Persistence log at <code>pl_history.jsonl</code>.</p>
 
-  <h3>Phase 4 — Key Games + Kalshi value</h3>
-  <p><code>Swing Score = 0.90 × |BE| + 0.10 × PP</code></p>
-  <p><strong>BE</strong> = |FIP- gap| (lower fip_minus is better; gap of 20 ≈ "favored pen is 20pp better-than-league than the other"). <strong>PP</strong> = 0.70 × PP_vegas + 0.30 × PP_starter. PP_vegas uses a U-shape (trough at total=8.5, peaks at low/high totals — leverage in close games, volume in slugfests). Threshold ≥ 30 for KEY tag (was 60 on the legacy 0-100 composite scale).</p>
-  <p><strong>v1.7 Kalshi value:</strong> <code>our_prob = 0.5 + (FIP- gap / 100) × K</code> with K = 0.39 (Tier 3+++ refit, see banner above). Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
+  <h3>Live alerter — the only bet trigger</h3>
+  <p>The alerter (`bullpen/alerter.py`) fires on live games matching all of:
+  inning ≥ 7, score within 1 run, FIP- gap ≥ 20 between bullpens, BE-favored
+  team is leading or tied (trailing-favorite subset filtered out per Tier 3+
+  finding — it's a 38% comeback rate, money-loser). Per-game dedupe stops
+  spam; fatigue + live pen-burn already burned arms inform but don't
+  recompute BE (Tier 3++ research showed burn-adjustment slightly hurts
+  prediction).</p>
 
-  <h3>Phase 5 — Opponent + same-day adjustments + dynamic refill</h3>
-  <p>Opponent-offense modifier (×0.95 to ×1.05 on BE) based on opposing team's 30-day wRC+ vs L/R weighted by the BE-favored bullpen's handedness mix. PL Streamer Rankings parsed for "no [Closer] today" signals (dynamic top-8 refill, recompute LI-FIP) and "left-handed pockets" (+3 handedness). Tonight's games only.</p>
+  <h3>Candidates Tonight</h3>
+  <p>Pre-game preview of games whose FIP- gap is wide enough that a close
+  late-inning state would clear the alerter's filter. Just the schedule +
+  composite gap; if the matchup goes ≤1 run in the 7th the alerter fires.</p>
 
   <h3>Phase 7 status — empirical K calibration</h3>
-  <p><strong>Tier 1 (4,857 games, 2024+2025):</strong> naive K = 0.182. <strong>Tier 2 (with team-strength controls):</strong> K_LPM ≈ 0 — looked like the thesis was dead. <strong>Tier 3+ (2026-05-08, methodology fix):</strong> The "composites" up through Tier 2 had been built from each team's top-5 by IP, which is the starting rotation, not the bullpen. Once rebuilt on real reliever data only (<code>rp_season_*.json</code> filtered to GS=0) and restricted to the live alerter's trigger (within 1 entering 7th, BE ≥ 40, n=433): K_LPM = +0.232 unconditioned, +0.202 with lead/trail control (p&lt;0.001 both). Bet-population win rate 60.5%. By lead state: leads 81% (priced-in), tied 59% (cleanest edge), trails 38% (now filtered at the alerter). Production K = 0.20. See <code>research/k_calibration/reports/hypothesis-grid.md</code>.</p>
+  <p><strong>Tier 1 (4,857 games, 2024+2025):</strong> naive K = 0.182. <strong>Tier 2 (with team-strength controls):</strong> K_LPM ≈ 0 — looked like the thesis was dead. <strong>Tier 3+ (methodology fix):</strong> the "composites" had been built from each team's top-5 by IP, which is the starting rotation, not the bullpen. Once rebuilt on real reliever data only and restricted to the live alerter's trigger: K_LPM = +0.232 (lead-controlled +0.202, p&lt;0.001), bet-population win rate 60.5%. By lead state: leads 81%, tied 59% (cleanest edge), trails 38% (filtered out). <strong>Tier 3+++ (FIP- cutover):</strong> refit on the absolute FIP- scale gave K = +0.39 with cross-season drift of just 0.025 (vs 0.076 on the composite scale). Production K = 0.39 since v1.7. See <code>research/k_calibration/reports/fip-minus-k.md</code>.</p>
 
   <h3>Sources</h3>
   <p>
@@ -826,13 +826,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-09T00:36:07.250486+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-09T00:47:39.901138+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-05-09T00:36:07.250495+00:00 · auto-pushed from
+  Generated 2026-05-09T00:47:39.901146+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
