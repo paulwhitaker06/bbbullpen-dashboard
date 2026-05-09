@@ -588,8 +588,8 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 <section class="bet-tracker-panel">
   <div class="bet-tracker-header">
-    <h2>Bet Tracker</h2>
-    <span class="bet-tracker-meta">$3 base · $38 starting bank · live alerts only</span>
+    <h2>Bet Tracker — Bayesian ¼ Kelly</h2>
+    <span class="bet-tracker-meta">$38 starting bank · 25% Kelly · 5% cap · live alerts only</span>
   </div>
   
 <div class="bet-tracker-summary">
@@ -605,11 +605,49 @@ details[open] summary { border-radius: 6px 6px 0 0; }
   
 <div class="paroli-banner">
   <div>
-    <div class="paroli-label">Next Stake (Paroli ladder)</div>
-    <div class="paroli-stake">$3.00 <span style="font-size:11px; font-weight:400; color:#78350f;">— Base</span></div>
+    <div class="paroli-label">Next Stake (Bayesian ¼ Kelly)</div>
+    <div class="paroli-stake">$1.61 <span style="font-size:11px; font-weight:400; color:#78350f;">at 50.0¢ YES · 25% Kelly · 5% cap</span></div>
+    <div style="font-size:11px; color:#78350f; margin-top:4px;">
+      Posterior: <strong>Beta(6.0, 4.0)</strong>
+      → p = <strong>60.0%</strong>
+      <span style="color:#9a7800;">(prior only (6.0+4.0 pseudo-trials))</span>
+      · Edge vs 50.0¢:
+      <span class="stat-val win" style="font-size:12px;">+10.0pp</span>
+      · Full Kelly: 17.0%
+    </div>
   </div>
   <div class="paroli-rules">
-    <strong>Win:</strong> next stake = current + 50% × profit · <strong>Loss:</strong> reset to $3 · <strong>Cap:</strong> $20
+    <strong>Posterior</strong> updates Beta(α, β) on each settled bet (α += 1 win, β += 1 loss).
+    <strong>Stake</strong> = bank × min(5%,
+    25% × full Kelly).
+    Skip when posterior ≤ Kalshi implied.
+  </div>
+</div>
+
+  
+<div style="margin-top:12px; padding:10px 14px; background:#fff; border:1px solid #c7d2fe; border-radius:6px;">
+  <div style="font-size:11px; font-weight:700; color:#3730a3; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;">
+    Stake by Kalshi YES price (right now, on a fresh alert)
+  </div>
+  <table style="width:auto; font-size:12px; border-collapse:collapse;">
+    <thead style="color:#6b7280;">
+      <tr><th style="text-align:left; padding:2px 8px;">Price</th><th style="text-align:left; padding:2px 8px;">Implied</th><th style="text-align:left; padding:2px 8px;">Edge</th><th style="text-align:left; padding:2px 8px;">Stake</th></tr>
+    </thead>
+    <tbody><tr><td>45¢</td><td>45%</td><td class="stat-val win">+15.0pp</td><td><strong>$1.90</strong></td></tr><tr><td>50¢</td><td>50%</td><td class="stat-val win">+10.0pp</td><td><strong>$1.61</strong></td></tr><tr><td>55¢</td><td>55%</td><td class="stat-val win">+5.0pp</td><td><strong>$1.00</strong></td></tr><tr><td>60¢</td><td>60%</td><td class="stat-val loss">+0.0pp</td><td><strong>—</strong></td></tr></tbody>
+  </table>
+</div>
+
+  
+<div style="margin-top:12px; padding:10px 14px; background:#fff; border:1px solid #c7d2fe; border-radius:6px;">
+  <div style="font-size:11px; font-weight:700; color:#3730a3; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px;">
+    Walk-away target
+  </div>
+  <div style="font-size:12px; color:#374151;">
+    At <strong>$57.00</strong> (+50%), withdraw half profits and reset.
+    Currently at <strong>0%</strong> of the way there.
+  </div>
+  <div style="margin-top:6px; height:6px; background:#e5e7eb; border-radius:3px; overflow:hidden;">
+    <div style="height:100%; width:0%; background:#16a34a; border-radius:3px;"></div>
   </div>
 </div>
 
@@ -620,7 +658,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
   
 <div class="bet-tracker-thesis">
-  <strong>Live alerts only.</strong> Bets are placed when the alerter fires (7th+ inning, ≤1 run, FIP- gap ≥ 20, BE-favored team not trailing). Stake follows the Paroli ladder above. Sample size goal: 50+ settled bets before reading any edge — Tier 3+++ historical refit suggests ~60% win rate in this regime, but real-world calibration is the tiebreaker.
+  <strong>Live alerts only.</strong> Bets are placed when the alerter fires (7th+ inning, ≤1 run, FIP- gap ≥ 20, BE-favored team not trailing). Stake follows Bayesian ¼ Kelly above — adapts to your actual realized win rate via the Beta posterior, not the static prior. The sample is the prior at the start, so early stakes lean on the Tier 3+++ ~60% historical estimate; as real bets settle, the posterior shifts toward your actual rate.
 </div>
 
 </section>
@@ -628,12 +666,125 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 
 <section class="watchlist-panel" style="border-color:#d1d5db; border-left-color:#6b7280; background:#f9fafb; margin-top:24px;">
   <div class="watchlist-header">
-    <h2 style="color:#374151;">Missed Live Opportunities <span style="font-weight:400; color:#6b7280;">— for reference, long-term tracking</span></h2>
-    <span class="watchlist-meta" style="color:#6b7280;">populated by /bbbullpen-now scheduled task</span>
+    <h2 style="color:#374151;">Missed Live Opportunities <span style="font-weight:400; color:#6b7280;">— alerter fire log</span></h2>
+    <span class="watchlist-meta" style="color:#6b7280;">10 total · 0 settled · 10 awaiting backfill</span>
   </div>
-  <div class="watchlist-summary" style="color:#374151;">
-    <em>Schema: timestamp · game · edge team · BE · inning/score at alert · final outcome · would-have W/L.</em>
-    Every qualifying live alert (6th+, ±1 run, BE ≥ 40) gets logged here with the eventual W/L outcome — even when no bet was placed.
+  <div class="bet-tracker-summary" style="background:#fff;">
+    <div class="stat"><span class="stat-label">Total fires</span><span class="stat-val">10</span></div>
+    <div class="stat"><span class="stat-label">Would-have</span><span class="stat-val">0–0</span></div>
+    <div class="stat"><span class="stat-label">Hit rate</span><span class="stat-val">— <span style="font-size:10px; color:#6b7280;">awaiting settlements</span></span></div>
+  </div>
+  <div style="font-size:11px; color:#6b7280; margin:8px 0 6px;">
+    Last 10 fires (most recent first):
+  </div>
+  <table class="bet-table">
+    <thead>
+      <tr><th>Date</th><th>Matchup</th><th>Edge</th><th>FIP- gap</th><th>State at alert</th><th>Final</th><th>Would-have</th></tr>
+    </thead>
+    <tbody>
+<tr>
+  <td>2026-05-03</td>
+  <td>New York Mets @ Los Angeles Angels</td>
+  <td><strong>Mets</strong></td>
+  <td>40.8</td>
+  <td>2-1 · End 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-05-03</td>
+  <td>Chicago White Sox @ San Diego Padres</td>
+  <td><strong>Padres</strong></td>
+  <td>53.8</td>
+  <td>3-3 · End 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-05-03</td>
+  <td>Houston Astros @ Boston Red Sox</td>
+  <td><strong>Red Sox</strong></td>
+  <td>49.0</td>
+  <td>1-1 · Mid 9</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-05-03</td>
+  <td>Houston Astros @ Boston Red Sox</td>
+  <td><strong>Red Sox</strong></td>
+  <td>49.0</td>
+  <td>1-1 · Top 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-05-02</td>
+  <td>Philadelphia Phillies @ Miami Marlins</td>
+  <td><strong>Phillies</strong></td>
+  <td>55.8</td>
+  <td>2-1 · Top 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-04-29</td>
+  <td>Chicago Cubs @ San Diego Padres</td>
+  <td><strong>Padres</strong></td>
+  <td>55.2</td>
+  <td>4-3 · End 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-04-29</td>
+  <td>Chicago Cubs @ San Diego Padres</td>
+  <td><strong>Padres</strong></td>
+  <td>55.2</td>
+  <td>4-3 · Top 7</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-04-29</td>
+  <td>Miami Marlins @ Los Angeles Dodgers</td>
+  <td><strong>Dodgers</strong></td>
+  <td>41.6</td>
+  <td>3-2 · Bot 9</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-04-29</td>
+  <td>Miami Marlins @ Los Angeles Dodgers</td>
+  <td><strong>Dodgers</strong></td>
+  <td>41.6</td>
+  <td>2-2 · Top 8</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+
+<tr>
+  <td>2026-04-29</td>
+  <td>Seattle Mariners @ Minnesota Twins</td>
+  <td><strong>Mariners</strong></td>
+  <td>50.2</td>
+  <td>2-2 · Bot 8</td>
+  <td>—</td>
+  <td><span class="bet-result-tag pending">—</span></td>
+</tr>
+</tbody>
+  </table>
+  <div style="font-size:11px; color:#6b7280; margin-top:8px;">
+    Every alerter fire gets logged with the eventual outcome (backfilled ~4h after game ends). This is the real-world calibration check on the Tier 3+++ ~60% hypothesis — once the n grows, hit rate here should converge with the Bet Tracker's posterior p above.
   </div>
 </section>
 
@@ -826,13 +977,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-09T00:47:39.901138+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-09T00:57:12.003777+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-05-09T00:47:39.901146+00:00 · auto-pushed from
+  Generated 2026-05-09T00:57:12.003785+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
