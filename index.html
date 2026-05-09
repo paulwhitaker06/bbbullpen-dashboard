@@ -157,13 +157,17 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 </head>
 <body>
 <h1>MLB Bullpen Rankings — 2026 Season</h1>
-<div class="subtitle">All 30 bullpens ranked by a forward-looking, leverage-weighted composite. The pitchers most likely to throw 6th-inning-and-on, weighted by projected role.</div>
+<div class="subtitle">All 30 bullpens ranked by FIP- (lower better, 100 = league average). LI-weighted across each team's top-5 highest-leverage relievers; FIP-, not 0-100 composite, since v1.7.</div>
 <div class="snapshot">Snapshot: 2026-05-08 · v1.6.0-phase5b · auto-refreshed daily at 13:00 + 13:30 + 13:35 UTC · <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#6366f1;">source</a></div>
 
 
+<div style="background:#fef2f2; border:1px solid #fca5a5; border-left:4px solid #dc2626; border-radius:6px; padding:10px 14px; margin-bottom:14px; font-size:13px; color:#7f1d1d; line-height:1.55;">
+  <strong>⚠ Data is 1 day old.</strong> The 2026-05-08 composites are still showing because today's refresh chain hasn't run successfully. Live alerts are unaffected. See <a href="https://github.com/paulwhitaker06/paul-bbbullpen/actions" style="color:#7f1d1d; text-decoration:underline;">workflow runs</a>.
+</div>
+
 
 <div class="phase7-banner" style="background:linear-gradient(90deg,#ecfdf5 0%,#fff 100%); border-color:#86efac; border-left-color:#16a34a; color:#065f46;">
-<strong style="color:#15803d;">Phase 7 Tier 3+ update:</strong> Prior tiers' "K → 0 after controls" was a methodology bug — the historical composites were measuring the rotation, not the bullpen. Refit on rebuilt bullpen-only composites, restricted to the live alerter's trigger (within 1 run entering 7th, BE ≥ 40, n=433): <strong>BE-favored team wins 60.5%</strong>. Lead-controlled K_LPM = <strong>+0.20 (p&lt;0.001)</strong>. By lead state: leads 81%, tied 59%, trails 38% (now filtered out at the alerter). Production K bumped to 0.20. See <code>research/k_calibration/reports/hypothesis-grid.md</code>.
+<strong style="color:#15803d;">v1.7 — FIP- cutover:</strong> Production scale is now <strong>FIP-</strong> (lower better; 100 = league average pen FIP this season). Tier 3+++ refit on FIP- gave <strong>K_LPM = +0.39, p &lt; 0.001</strong>, with cross-season drift of just 0.025 (vs 0.076 on the legacy 0-100 composite — the absolute scale is ~3× more stable across seasons). Bet-population win rate ≈ 60% on the alerter trigger (within 1 entering 7th, FIP- gap ≥ 20). By lead state: leads 81%, tied 59%, trails 38% (filtered out). Threshold for KEY-game tag in the panel below: Swing Score ≥ 30 (was 60 on composite scale). See <code>research/k_calibration/reports/fip-minus-k.md</code>.
 </div>
 
 
@@ -182,7 +186,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <section class="key-games-panel">
   <div class="key-games-header">
     <h2>Key Bullpen Games — Next 3 Days</h2>
-    <span class="key-games-formula">Swing = 0.90 × BE + 0.10 × PP · threshold ≥ 60</span>
+    <span class="key-games-formula">Swing = 0.90 × |FIP- gap| + 0.10 × PP · threshold ≥ 30</span>
     <span class="key-games-meta">1 flagged / 15 scored / 30 deferred</span>
   </div>
   <div class="key-games-list">
@@ -209,7 +213,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <summary class="rankings-summary">
   <h2 style="display:inline; margin:0; font-size:16px;">Team Rankings</h2>
   <span style="color:#6b7280; font-size:11px; font-weight:400; margin-left:10px;">
-    30 teams · sorted by composite · click to collapse
+    30 teams · sorted by FIP- (lower=better, 100=league avg) · league avg pen FIP = 3.87 · click to collapse
   </span>
 </summary>
 <div class="rankings-body">
@@ -218,7 +222,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <th>#</th>
   <th class="left">Team</th>
-  <th class="left">Composite</th>
+  <th class="left">FIP−</th>
   <th>LI-FIP</th>
   <th>WAR</th>
   <th>P+</th>
@@ -231,7 +235,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">1</td>
   <td class="left team-name">Padres</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:100%"></span></span><span class="composite-num">100.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:100%"></span></span><span class="composite-num">80.2</span></td>
   <td>3.13</td>
   <td>4.1</td>
   <td>107</td>
@@ -242,7 +246,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">2</td>
   <td class="left team-name">Mariners</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:75%"></span></span><span class="composite-num">74.7</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:79%"></span></span><span class="composite-num">86.9</span></td>
   <td>3.39</td>
   <td>2.5</td>
   <td>105</td>
@@ -253,7 +257,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">3</td>
   <td class="left team-name">Braves</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:70%"></span></span><span class="composite-num">70.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:72%"></span></span><span class="composite-num">89.3</span></td>
   <td>3.49</td>
   <td>2.9</td>
   <td>102</td>
@@ -264,7 +268,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">4</td>
   <td class="left team-name">Phillies</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:77%"></span></span><span class="composite-num">77.1</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:72%"></span></span><span class="composite-num">89.3</span></td>
   <td>3.49</td>
   <td>3.2</td>
   <td>104</td>
@@ -275,7 +279,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">5</td>
   <td class="left team-name">Red Sox</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:70%"></span></span><span class="composite-num">70.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:70%"></span></span><span class="composite-num">89.8</span></td>
   <td>3.51</td>
   <td>2.8</td>
   <td>103</td>
@@ -286,7 +290,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">6</td>
   <td class="left team-name">Yankees</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:61%"></span></span><span class="composite-num">61.2</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:64%"></span></span><span class="composite-num">91.8</span></td>
   <td>3.59</td>
   <td>2.6</td>
   <td>101</td>
@@ -297,7 +301,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">7</td>
   <td class="left team-name">Brewers</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:66%"></span></span><span class="composite-num">65.9</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:61%"></span></span><span class="composite-num">93.0</span></td>
   <td>3.63</td>
   <td>2.5</td>
   <td>104</td>
@@ -308,7 +312,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">8</td>
   <td class="left team-name">Blue Jays</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:69%"></span></span><span class="composite-num">69.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:57%"></span></span><span class="composite-num">94.2</span></td>
   <td>3.68</td>
   <td>2.5</td>
   <td>106</td>
@@ -319,7 +323,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">9</td>
   <td class="left team-name">Mets</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:51%"></span></span><span class="composite-num">50.5</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:55%"></span></span><span class="composite-num">95.0</span></td>
   <td>3.71</td>
   <td>2.0</td>
   <td>100</td>
@@ -330,7 +334,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">10</td>
   <td class="left team-name">Dodgers</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:69%"></span></span><span class="composite-num">68.7</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:49%"></span></span><span class="composite-num">96.7</span></td>
   <td>3.77</td>
   <td>2.7</td>
   <td>106</td>
@@ -341,7 +345,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">11</td>
   <td class="left team-name">Orioles</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:45%"></span></span><span class="composite-num">45.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:47%"></span></span><span class="composite-num">97.2</span></td>
   <td>3.80</td>
   <td>1.8</td>
   <td>99</td>
@@ -352,7 +356,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">12</td>
   <td class="left team-name">Marlins</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:41%"></span></span><span class="composite-num">41.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:47%"></span></span><span class="composite-num">97.5</span></td>
   <td>3.81</td>
   <td>1.4</td>
   <td>99</td>
@@ -363,7 +367,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">13</td>
   <td class="left team-name">Giants</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:37%"></span></span><span class="composite-num">37.5</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:43%"></span></span><span class="composite-num">98.8</span></td>
   <td>3.86</td>
   <td>0.8</td>
   <td>100</td>
@@ -374,7 +378,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">14</td>
   <td class="left team-name">White Sox</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:48%"></span></span><span class="composite-num">47.8</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:42%"></span></span><span class="composite-num">98.9</span></td>
   <td>3.86</td>
   <td>2.7</td>
   <td>97</td>
@@ -385,7 +389,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">15</td>
   <td class="left team-name">Cubs</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:44%"></span></span><span class="composite-num">44.1</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:37%"></span></span><span class="composite-num">100.5</span></td>
   <td>3.92</td>
   <td>1.4</td>
   <td>102</td>
@@ -396,7 +400,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">16</td>
   <td class="left team-name">Tigers</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:39%"></span></span><span class="composite-num">38.9</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:37%"></span></span><span class="composite-num">100.7</span></td>
   <td>3.93</td>
   <td>1.3</td>
   <td>100</td>
@@ -407,7 +411,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">17</td>
   <td class="left team-name">Royals</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:30%"></span></span><span class="composite-num">29.9</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:37%"></span></span><span class="composite-num">100.8</span></td>
   <td>3.93</td>
   <td>1.7</td>
   <td>94</td>
@@ -418,7 +422,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">18</td>
   <td class="left team-name">Diamondbacks</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:41%"></span></span><span class="composite-num">40.9</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:34%"></span></span><span class="composite-num">101.5</span></td>
   <td>3.96</td>
   <td>1.1</td>
   <td>102</td>
@@ -429,7 +433,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">19</td>
   <td class="left team-name">Cardinals</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:33%"></span></span><span class="composite-num">32.6</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:33%"></span></span><span class="composite-num">101.9</span></td>
   <td>3.98</td>
   <td>0.9</td>
   <td>99</td>
@@ -440,7 +444,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">20</td>
   <td class="left team-name">Rays</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:43%"></span></span><span class="composite-num">43.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:32%"></span></span><span class="composite-num">102.3</span></td>
   <td>3.99</td>
   <td>1.4</td>
   <td>102</td>
@@ -451,7 +455,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">21</td>
   <td class="left team-name">Twins</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:17%"></span></span><span class="composite-num">16.9</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:27%"></span></span><span class="composite-num">103.8</span></td>
   <td>4.05</td>
   <td>1.0</td>
   <td>92</td>
@@ -462,7 +466,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">22</td>
   <td class="left team-name">Pirates</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:26%"></span></span><span class="composite-num">26.4</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:27%"></span></span><span class="composite-num">103.9</span></td>
   <td>4.06</td>
   <td>1.0</td>
   <td>97</td>
@@ -473,7 +477,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">23</td>
   <td class="left team-name">Guardians</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:19%"></span></span><span class="composite-num">18.8</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:26%"></span></span><span class="composite-num">104.2</span></td>
   <td>4.07</td>
   <td>0.4</td>
   <td>96</td>
@@ -484,7 +488,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">24</td>
   <td class="left team-name">Athletics</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:39%"></span></span><span class="composite-num">39.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:25%"></span></span><span class="composite-num">104.5</span></td>
   <td>4.08</td>
   <td>1.7</td>
   <td>100</td>
@@ -495,7 +499,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">25</td>
   <td class="left team-name">Astros</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:15%"></span></span><span class="composite-num">15.5</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:21%"></span></span><span class="composite-num">105.7</span></td>
   <td>4.12</td>
   <td>0.7</td>
   <td>94</td>
@@ -506,7 +510,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">26</td>
   <td class="left team-name">Reds</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:17%"></span></span><span class="composite-num">16.6</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:15%"></span></span><span class="composite-num">107.9</span></td>
   <td>4.21</td>
   <td>1.2</td>
   <td>93</td>
@@ -517,7 +521,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">27</td>
   <td class="left team-name">Angels</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:14%"></span></span><span class="composite-num">14.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:14%"></span></span><span class="composite-num">107.9</span></td>
   <td>4.21</td>
   <td>0.7</td>
   <td>94</td>
@@ -528,7 +532,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">28</td>
   <td class="left team-name">Rangers</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:20%"></span></span><span class="composite-num">19.7</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:7%"></span></span><span class="composite-num">110.3</span></td>
   <td>4.30</td>
   <td>0.7</td>
   <td>98</td>
@@ -539,7 +543,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">29</td>
   <td class="left team-name">Rockies</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:18%"></span></span><span class="composite-num">17.6</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:0%"></span></span><span class="composite-num">112.5</span></td>
   <td>4.39</td>
   <td>0.8</td>
   <td>97</td>
@@ -550,7 +554,7 @@ details[open] summary { border-radius: 6px 6px 0 0; }
 <tr>
   <td class="rank">30</td>
   <td class="left team-name">Nationals</td>
-  <td class="left composite-cell"><span class="composite-bar"><span style="width:0%"></span></span><span class="composite-num">0.0</span></td>
+  <td class="left composite-cell"><span class="composite-bar"><span style="width:0%"></span></span><span class="composite-num">112.6</span></td>
   <td>4.40</td>
   <td>0.2</td>
   <td>92</td>
@@ -801,9 +805,9 @@ details[open] summary { border-radius: 6px 6px 0 0; }
   <p>RP Roundup parser scans editorial sentences for Tier A signals (velocity/stuff/command decline → 0.7× LI-weight discount, single mention triggers) and Tier B (concerning/shaky/wobbly → requires 2+ mentions in 7 days). Recovery patterns (welcome back, first save since) undo active discounts. Closed-set pitcher-name matching against the FG roster. Persistence log at <code>pl_history.jsonl</code>.</p>
 
   <h3>Phase 4 — Key Games + Kalshi value</h3>
-  <p><code>Swing Score = 0.90 × BE + 0.10 × PP</code></p>
-  <p><strong>BE</strong> = composite gap. <strong>PP</strong> = 0.70 × PP_vegas + 0.30 × PP_starter. PP_vegas uses a U-shape (trough at total=8.5, peaks at low/high totals — leverage in close games, volume in slugfests). Threshold ≥ 60 for KEY tag.</p>
-  <p><strong>v1.6.0 Kalshi value:</strong> <code>our_prob = 0.5 + (BE / 100) × K</code> with K = 0.20 (calibrated empirically Tier 3+, see banner above). Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
+  <p><code>Swing Score = 0.90 × |BE| + 0.10 × PP</code></p>
+  <p><strong>BE</strong> = |FIP- gap| (lower fip_minus is better; gap of 20 ≈ "favored pen is 20pp better-than-league than the other"). <strong>PP</strong> = 0.70 × PP_vegas + 0.30 × PP_starter. PP_vegas uses a U-shape (trough at total=8.5, peaks at low/high totals — leverage in close games, volume in slugfests). Threshold ≥ 30 for KEY tag (was 60 on the legacy 0-100 composite scale).</p>
+  <p><strong>v1.7 Kalshi value:</strong> <code>our_prob = 0.5 + (FIP- gap / 100) × K</code> with K = 0.39 (Tier 3+++ refit, see banner above). Compare to Kalshi effective probability (post-fee). Value ≥ +4% → STRONG; +2-4% → MARGINAL; below → SKIP.</p>
 
   <h3>Phase 5 — Opponent + same-day adjustments + dynamic refill</h3>
   <p>Opponent-offense modifier (×0.95 to ×1.05 on BE) based on opposing team's 30-day wRC+ vs L/R weighted by the BE-favored bullpen's handedness mix. PL Streamer Rankings parsed for "no [Closer] today" signals (dynamic top-8 refill, recompute LI-FIP) and "left-handed pockets" (+3 handedness). Tonight's games only.</p>
@@ -822,13 +826,13 @@ details[open] summary { border-radius: 6px 6px 0 0; }
     • <a href="https://api.elections.kalshi.com/trade-api/v2" target="_blank">Kalshi public trading API</a> — events + market prices
   </p>
 
-  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-08T21:24:12.901311+00:00</p>
+  <p class="source-note">Methodology version: v1.6.0-phase5b · auto-refreshed daily via the paul-bbbullpen GitHub Actions workflows · 2026-05-09T00:36:07.250486+00:00</p>
 </div>
 </details>
 
 
 <footer style="text-align:center; color:#6b7280; font-size:11px; margin-top:30px;">
-  Generated 2026-05-08T21:24:12.901319+00:00 · auto-pushed from
+  Generated 2026-05-09T00:36:07.250495+00:00 · auto-pushed from
   <a href="https://github.com/paulwhitaker06/paul-bbbullpen" style="color:#1d4ed8;">paul-bbbullpen</a>
   via refresh-dashboard.yml
 </footer>
